@@ -1,0 +1,48 @@
+{
+    "name": "server-root",
+    "version": "1.0.0",
+    "description": "local webserver",
+    "main": "server.js",
+    "scripts": {
+        "start": "supervisor -e html,ts,scss -i node_modules,bex server.js",
+        "build": "npm run css && npm run js",
+        "css": "sass src/css:dist/css && postcss dist/css/style.css -r",
+        "js": "esbuild src/ts/main.ts --minify --sourcemap --allow-overwrite --outdir=dist/js --log-level=warning",
+        "generate-cert": "sh ssl/generate-cert.sh"
+    },
+    "repository": {
+        "type": "git",
+        "url": "server_root"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2",
+        "reload": "^3.2.1"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.14",
+        "connect-livereload": "^0.6.1",
+        "cssnano": "^6.0.1",
+        "cssnano-preset-advanced": "^6.0.1",
+        "dotenv": "^16.3.1",
+        "esbuild": "^0.18.11",
+        "eslint": "^8.43.0",
+        "livereload": "^0.9.3",
+        "postcss": "^8.4.24",
+        "postcss-cli": "^10.1.0",
+        "postcss-load-config": "^4.0.1",
+        "sass": "^1.63.6",
+        "sharp": "^0.32.1",
+        "typescript": "^5.1.6"
+    },
+    "cssnano": {
+        "preset": "cssnano-preset-advanced"
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {},
+            "cssnano": {}
+        }
+    }
+}

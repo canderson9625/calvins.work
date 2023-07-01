@@ -1,0 +1,104 @@
+@use 'mixins';
+
+$orange: #f59725;
+$deep: #f57e53;
+$pink: #ce6ab0;
+$purple: #985277;
+$royal: #4b375c;
+
+// $peach: #ffcdb2;
+// $orange: #ffb4a2;
+// $pink: #e5989b;
+// $slate-pink: #b5838d;
+// $grey--purple: #6d6875;
+
+// $hotpink: #ff69eb;
+// $pink: #ff86c8;
+// $pink-orange: #ffa3a5;
+// $orange: #ffbf81;
+// $yellow: #ffdc5e;
+
+body {
+    position: relative;
+    background: linear-gradient(
+        145deg,
+        $orange 20%,
+        $deep 30%,
+        $pink 65%,
+        $purple 80%,
+        $royal
+    ) no-repeat fixed;
+    min-height: 100vh;
+    margin: 24px;
+    color: orange;
+}
+
+main {
+    max-width: 1720px;
+    backdrop-filter: hue-rotate(-33deg) blur(10px) opacity(0.75);
+    min-height: 100vh;
+    width: 100%;
+    // border: 2px solid black;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+    animation: hue-rotate infinite 5s linear;
+    
+    // @include mixins.neumorphic(8px, #dd714b, #ff8759);
+}
+
+@keyframes hue-rotate {
+    0% {
+        backdrop-filter: hue-rotate(327deg);
+    }
+    42% {
+        backdrop-filter: hue-rotate(237deg);
+    }
+    50% {
+        backdrop-filter: hue-rotate(147deg);
+    }
+    60% {
+        backdrop-filter: hue-rotate(57deg);
+    }
+    100% {
+        backdrop-filter: hue-rotate(-33deg);
+    }
+}
+
+section {
+    max-width: 1440px;
+    padding: 24px;
+    background: black;
+    position: relative;
+
+    &:first-child {
+        border-radius: 8px 8px 0 0;
+        left: -1px;
+        top: -1px;
+        clip-path: ellipse(50% at 0% 0%);
+    }
+
+    &:last-child {
+        border-radius: 0 0 8px 8px;
+        bottom: -1px;
+        right: -1px;
+    }
+}
+
+.shapes {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(5px);
+
+    .triangle {
+        background: green;
+        width: 500px;
+        height: 500px;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+}

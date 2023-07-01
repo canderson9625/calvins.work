@@ -1,0 +1,6 @@
+@mixin neumorphic($radius:10px, $dark:#2f2a2a3f, $light:#5a5f5ff0) {
+    border-radius: $radius;
+    // background: linear-gradient(145deg, $dark, $light);
+    box-shadow:  20px 20px 15px $dark,
+                -20px -20px 15px $light;
+}
