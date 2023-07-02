@@ -6,7 +6,29 @@ $pink: #ce6ab0;
 $purple: #985277;
 $royal: #4b375c;
 
+// opacity max 33
+$op_or: #f5d0a4;
+$op_de: #f5baa4;
+$op_pi: #cf8aba;
+$op_pu: #996781;
+$op_ro: #4e3e5c;
+
+// brightness min 90
+$br_or: #f5d0a4; //96
+$br_de: #f5baa4; //96
+$br_pi: #e69acf; //90
+$br_pu: #e69ac1; //90
+$br_ro: #c29ae6; //90
+
+// alpha min 50
+$al_ro: #c29ae654;
+$al_pu: #e69ac154;
+$al_pi: #e69acf54;
+$al_de: #f5baa454;
+$al_or: #f5d0a454;
+
 // $peach: #ffcdb2;
+
 // $orange: #ffb4a2;
 // $pink: #e5989b;
 // $slate-pink: #b5838d;
@@ -17,20 +39,56 @@ $royal: #4b375c;
 // $pink-orange: #ffa3a5;
 // $orange: #ffbf81;
 // $yellow: #ffdc5e;
+:root {
+    --light: ;
+}
+
+html {
+    background: black;
+
+    &.dark {
+        background: black;
+    }
+
+    &.light {
+        background: white;
+    }
+
+    &.time {
+        --time: hsl(0, 0, var(--light));
+        background: var(--time);
+    }
+}
 
 body {
     position: relative;
     background: linear-gradient(
         145deg,
-        $orange 20%,
-        $deep 30%,
-        $pink 65%,
-        $purple 80%,
-        $royal
+        $al_or 20%,
+        $al_de 30%,
+        $al_pi 65%,
+        $al_pu 80%,
+        $al_ro
     ) no-repeat fixed;
     min-height: 100vh;
-    margin: 24px;
+    // margin: 24px;
+    margin: 0;
+    padding: 48px;
     color: orange;
+    // filter: hue-rotate(33deg);
+    // animation: filter-rotate infinite 5s 1s linear
+
+    &::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        // backdrop-filter: hue-rotate(45deg);
+        animation: hue-rotate infinite 15s 1s linear
+    }
 }
 
 main {
@@ -39,15 +97,28 @@ main {
     min-height: 100vh;
     width: 100%;
     // border: 2px solid black;
-    border-radius: 8px;
+    border-radius: 69px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     margin: auto;
-    animation: hue-rotate infinite 5s linear;
-    
+    animation: hue-rotate infinite 15s linear;
+    box-sizing: border-box;
+    clip-path: ellipse(200% 50%);
+    padding: 48px;
     // @include mixins.neumorphic(8px, #dd714b, #ff8759);
+
+    .bg {
+        background: linear-gradient(
+            145deg,
+            $op_or 20%,
+            $op_de 30%,
+            $op_pi 65%,
+            $op_pu 80%,
+            $op_ro
+        ) no-repeat fixed; 
+    }
 }
 
 @keyframes hue-rotate {
@@ -68,21 +139,40 @@ main {
     }
 }
 
+@keyframes filter-rotate {
+    0% {
+        filter: hue-rotate(327deg);
+    }
+    42% {
+        filter: hue-rotate(237deg);
+    }
+    50% {
+        filter: hue-rotate(147deg);
+    }
+    60% {
+        filter: hue-rotate(57deg);
+    }
+    100% {
+        filter: hue-rotate(33deg);
+    }
+}
+
 section {
     max-width: 1440px;
     padding: 24px;
     background: black;
     position: relative;
+    border-radius: 4px;
 
     &:first-child {
-        border-radius: 8px 8px 0 0;
+        border-radius: 8px 8px 4px 4px;
         left: -1px;
         top: -1px;
         clip-path: ellipse(50% at 0% 0%);
     }
 
     &:last-child {
-        border-radius: 0 0 8px 8px;
+        border-radius: 4px 4px 8px 8px;
         bottom: -1px;
         right: -1px;
     }
@@ -96,9 +186,12 @@ section {
     filter: blur(5px);
 
     .triangle {
-        background: green;
+        background: #4fffff;
         width: 500px;
         height: 500px;
-        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        clip-path: polygon(0 0, 100% 100%, 0 100%);
+        transform: rotate(45deg);
     }
+
+    // animated the shapes and make them move in an ascending order until looping through all shapes through 9
 }
