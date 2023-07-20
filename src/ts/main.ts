@@ -9,3 +9,11 @@ let user: User = {
 }
 
 // console.log(user);
+
+// import { render } from "./react";
+// render();
+// import * as ReactDOM from "react-dom";
+// const App = require("react.tsx");
+// App({"message": "test"});
+// ReactDOM.render(App({"message": "test"}), document.querySelector("#root"));
+// console.log(user);

@@ -3,13 +3,15 @@
         "outDir": "./dist/js",
         "sourceMap": true,
         "noImplicitAny": true,
-        // "module": "CommonJS",
-        "target": "es5",
-        //   "jsx": "react",
+        "module": "ESNext",
+        "target": "ES2015",
+        "jsx": "react",
         "allowJs": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
-        "strict": true
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true, /* Implies 'allowSyntheticDefaultImports'. */
     },
     "exclude": ["node_modules", "dist", "bex", "server.js"]
 }
