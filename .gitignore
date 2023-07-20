@@ -1,8 +1,12 @@
-node_modules
-bex
 index copy.html
+index.fig
+package-lock.json
 *.key
 *.cert
 *.map
-*/media
+src/media
+bex
+node_modules
 ssl
+figma-widget
+dist/assets/fonts

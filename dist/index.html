@@ -9,38 +9,67 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://calvins.work">
     <meta property="og:description" content="Calvin Anderson is a full stack software engineer in Greenville, SC">
-    <!-- <meta property="og:image" content="bex.png"> -->
+    <meta property="og:image" content="assets/media/bg.png.webp">
 
     <link rel="icon" href="/favicon.ico">
-    <!-- <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
-    <!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png"> -->
     <title>Calvin Anderson | Full Stack Software Engineer</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <script async defer src="/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- <script async defer src="assets/js/react.js"></script> -->
+    <script async defer src="assets/js/main.js"></script>
 </head>
 <body>
-    <div class="shapes">
-        <div class="triangle"></div>
-        <div class="pentagon"></div>
-        <div class="septagon"></div>
-    </div>
     <main>
+        <div class="shapes">
+            <img src="assets/media/squares.png.webp" alt="">
+        </div>
+
+        <div id="root"></div>
+
         <section class="header">
-            <h1>Calvin Anderson | Full Stack Software Engineer</h1>
-            <p>I'm a full stack software engineer located in Greenville, SC open to local, hybrid, and remote opportunities. I'm excited about machine learning, passionate about creating accessible, beautiful, and performant websites.</p>
-        </section class="header">
+            <div class="backdrop_filter"></div>
+
+            <h1>Calvin Anderson<span class="pipe"> | </span><span class="title">Full Stack Software Engineer</span> <a href="https://www.linkedin.com/in/calvin-anderson-22b601ba/" target="_blank" aria-label="Visit my LinkedIn Profile"></a></h1>
+            <p>I'm a full stack software engineer located in Greenville, SC open to local, hybrid, and remote opportunities. I'm excited about machine learning; passionate about creating accessible, beautiful, and performant websites.</p>
+        </section>
 
         <section class="portfolio">
-            <h2>Portfolio</h2>
-        </section class="portfolio">
+            <div class="backdrop_filter"></div>
+            <h2>Projects I'm Proud of!</h2>
 
-        <section class="footer">
-            <a href="https://www.linkedin.com/in/calvin-anderson-22b601ba/" class="btn">LinkedIn</a>
-            <a href="https://github.com/canderson9625" class="btn">Github</a>
-            <a href="/calvin_anderson_resume.pdf" class="btn">Resume</a>
-            <a href="mailto:looking@calvins.work" class="btn">Email</a>
-        </section class="footer">
+            <article>
+                <img src="assets/media/seed.png.webp" alt="The Seed Website's landing page for its blog.">
+                <div class="content">
+                    <h3>Seed <span>Wordpress</span></h3>
+                    <p>I helped with the responsiveness of the landing page and I built the new blog post template utilizing custom Gutenberg Blocks for a hassle-free backend content management experience.</p>
+                    <a class="btn" href="https://seed.com/cultured" target="_blank">
+                        Visit Seed
+                    </a>
+                </div>
+            </article>
+
+            <article>
+                <img src="assets/media/brmc.png.webp" alt="The BRMC Website's home page">
+                <div class="content">
+                    <h3>BRMC <span>Wordpress</span></h3>
+                    <p>I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party CRM, into the theme for this code so that we could build custom forms to capture leads but continue to utilize Hubspot's workflows for automating the life of the lead.</p>
+                    <a class="btn" href="https://blueridgemountainclub.com" target="_blank">
+                        Visit Blue Ridge Mountain Club
+                    </a>
+                </div>
+            </article>
+
+            <article>
+                <img src="assets/media/organicolivia.png.webp" alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine.">
+                <div class="content">
+                    <h3>Organic Olivia <span>Shopify</span></h3>
+                    <p>I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the User Experience.</p>
+                    <a class="btn" href="https://organicolivia.com" target="_blank">
+                        Visit Organic Olivia
+                    </a>
+                </div>
+            </article>
+        </section>
     </main>
 </body>
 </html>
