@@ -13,5 +13,5 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true, /* Implies 'allowSyntheticDefaultImports'. */
     },
-    "exclude": ["node_modules", "dist", "bex", "server.js"]
+    "exclude": ["node_modules", "dist", "server.js"]
 }

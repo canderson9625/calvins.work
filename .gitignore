@@ -1,12 +1,12 @@
-index copy.html
-index.fig
-package-lock.json
+node_modules
 *.key
 *.cert
 *.map
+*.bak
+.DS_Store
+index.fig
+package-lock.json
+
 src/media
-bex
-node_modules
-ssl
-figma-widget
 dist/assets/fonts
+dist/assets/media

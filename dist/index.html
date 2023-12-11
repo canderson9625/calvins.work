@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,22 +9,20 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://calvins.work">
     <meta property="og:description" content="Calvin Anderson is a full stack software engineer in Greenville, SC">
-    <meta property="og:image" content="assets/media/bg.png.webp">
+    <meta property="og:image" content="./assets/media/bg.png.webp">
 
-    <link rel="icon" href="/favicon.ico">
-    <title>Calvin Anderson | Full Stack Software Engineer</title>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <title>Calvin Anderson | Full Stack Web Developer</title>
 
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    <!-- <script async defer src="assets/js/react.js"></script> -->
-    <script async defer src="assets/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <script async defer type="module" src="./assets/js/client.js"></script>
 </head>
 <body>
     <main>
         <div class="shapes">
-            <img src="assets/media/squares.png.webp" alt="">
+            <!-- Empty alt tag keeps image silent on screen readers compared to a missing attribute -->
+            <img src="./assets/media/squares.png.webp" alt="">
         </div>
-
-        <div id="root"></div>
 
         <section class="header">
             <div class="backdrop_filter"></div>
@@ -37,38 +35,129 @@
             <div class="backdrop_filter"></div>
             <h2>Projects I'm Proud of!</h2>
 
-            <article>
-                <img src="assets/media/seed.png.webp" alt="The Seed Website's landing page for its blog.">
-                <div class="content">
-                    <h3>Seed <span>Wordpress</span></h3>
-                    <p>I helped with the responsiveness of the landing page and I built the new blog post template utilizing custom Gutenberg Blocks for a hassle-free backend content management experience.</p>
-                    <a class="btn" href="https://seed.com/cultured" target="_blank">
-                        Visit Seed
-                    </a>
-                </div>
-            </article>
+            <div id="ssr-outlet"><div class="carousel" style="cursor:grab"><div class="carousel-controls"><button class="toggle">Toggle Animations <!-- -->Off</button></div><div class="track"><div class="item" data-index="0"><article class=" project" aria-expanded="false"><img src="assets/media/seed.png.webp" alt="The Seed Website&#x27;s landing page for its blog."/><div class="content"><h3>Seed<!-- --> <span>Wordpress</span></h3><p>I helped with the responsiveness of the landing page and I built the new blog post template utilizing custom Gutenberg Blocks for a hassle-free backend content management experience.</p><a class="btn" href="https://seed.com/cultured" target="_blank">Visit <!-- -->Seed</a></div></article></div><div class="item" data-index="1"><article class=" project" aria-expanded="false"><img src="assets/media/brmc.png.webp" alt="The BRMC Website&#x27;s home page"/><div class="content"><h3>BRMC<!-- --> <span>Wordpress</span></h3><p>I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party CRM, into the theme for this code so that we could build custom forms to capture leads but continue to utilize Hubspot&#x27;s workflows for automating the life of the lead.</p><a class="btn" href="https://blueridgemountainclub.com" target="_blank">Visit <!-- -->BRMC</a></div></article></div><div class="item" data-index="2"><article class=" project" aria-expanded="false"><img src="assets/media/organicolivia.png.webp" alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine."/><div class="content"><h3>Organic Olivia<!-- --> <span>Shopify</span></h3><p>I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the User Experience.</p><a class="btn" href="https://organicolivia.com" target="_blank">Visit <!-- -->Organic Olivia</a></div></article></div><div class="item" data-index="3"><article class=" project" aria-expanded="false"><img src="assets/media/insignispartners.png.webp" alt="The insignis partners website. An Investment and Real Estate Development firm."/><div class="content"><h3>Insignis Partners<!-- --> <span>Wordpress</span></h3><p>I enjoyed creating the animations and interactivity on the portfolio page. We used advanced custom fields to give the client the ability to update their staff.</p><a class="btn" href="https://insignispartners.com" target="_blank">Visit <!-- -->Insignis Partners</a></div></article></div><div class="item" data-index="4"><article class=" project" aria-expanded="false"><img src="assets/media/davisfloyd.png.webp" alt="Davis Floyd Civil Construction."/><div class="content"><h3>Davis Floyd<!-- --> <span>Wordpress</span></h3><p>I created the carousel animation on the Markets page and worked on the timeline on the about.</p><a class="btn" href="https://www.davisfloyd.com" target="_blank">Visit <!-- -->Davis Floyd</a></div></article></div><div class="item" data-index="5"><article class=" project" aria-expanded="false"><img src="assets/media/kroegermarine.png.webp" alt="Kroeger Marine Docks."/><div class="content"><h3>Kroeger Marine<!-- --> <span>Wordpress</span></h3><p>I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.</p><a class="btn" href="https://www.kroegermarine.com" target="_blank">Visit <!-- -->Kroeger Marine</a></div></article></div><div class="item" data-index="6"><article class=" project" aria-expanded="false"><img src="assets/media/vivepsych.png.webp" alt="Vive Psyche located in Greenville, SC."/><div class="content"><h3>Vive Psych<!-- --> <span>Wordpress</span></h3><p>I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.</p><a class="btn" href="https://vivepsych.com" target="_blank">Visit <!-- -->Vive Psych</a></div></article></div><div class="item" data-index="7"><article class=" project" aria-expanded="false"><img src="assets/media/coretransformers.png.webp" alt="The Core Transformers Wordpress site."/><div class="content"><h3>Core Transformers<!-- --> <span>Wordpress &amp; BigCommerce</span></h3><p>I was the sole developer for this project. I also gave their bigcommerce store a css update to match the wordpress site&#x27;s brand.</p><a class="btn" href="https://coretransformers.com" target="_blank">Visit <!-- -->Core Transformers</a></div></article></div><div class="item" data-index="8"><article class=" project" aria-expanded="false"><img src="assets/media/parksideob-gyn.png.webp" alt="Parkside OB-GYN. Modern Women, Modern Care."/><div class="content"><h3>Parkside OB-GYN<!-- --> <span>Wordpress</span></h3><p>I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.</p><a class="btn" href="https://parksideob-gyn.com" target="_blank">Visit <!-- -->Parkside OB-GYN</a></div></article></div><div class="item" data-index="0"><article class=" project" aria-expanded="false"><img src="assets/media/seed.png.webp" alt="The Seed Website&#x27;s landing page for its blog."/><div class="content"><h3>Seed<!-- --> <span>Wordpress</span></h3><p>I helped with the responsiveness of the landing page and I built the new blog post template utilizing custom Gutenberg Blocks for a hassle-free backend content management experience.</p><a class="btn" href="https://seed.com/cultured" target="_blank">Visit <!-- -->Seed</a></div></article></div><div class="item" data-index="1"><article class=" project" aria-expanded="false"><img src="assets/media/brmc.png.webp" alt="The BRMC Website&#x27;s home page"/><div class="content"><h3>BRMC<!-- --> <span>Wordpress</span></h3><p>I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party CRM, into the theme for this code so that we could build custom forms to capture leads but continue to utilize Hubspot&#x27;s workflows for automating the life of the lead.</p><a class="btn" href="https://blueridgemountainclub.com" target="_blank">Visit <!-- -->BRMC</a></div></article></div><div class="item" data-index="2"><article class=" project" aria-expanded="false"><img src="assets/media/organicolivia.png.webp" alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine."/><div class="content"><h3>Organic Olivia<!-- --> <span>Shopify</span></h3><p>I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the User Experience.</p><a class="btn" href="https://organicolivia.com" target="_blank">Visit <!-- -->Organic Olivia</a></div></article></div><div class="item" data-index="3"><article class=" project" aria-expanded="false"><img src="assets/media/insignispartners.png.webp" alt="The insignis partners website. An Investment and Real Estate Development firm."/><div class="content"><h3>Insignis Partners<!-- --> <span>Wordpress</span></h3><p>I enjoyed creating the animations and interactivity on the portfolio page. We used advanced custom fields to give the client the ability to update their staff.</p><a class="btn" href="https://insignispartners.com" target="_blank">Visit <!-- -->Insignis Partners</a></div></article></div><div class="item" data-index="4"><article class=" project" aria-expanded="false"><img src="assets/media/davisfloyd.png.webp" alt="Davis Floyd Civil Construction."/><div class="content"><h3>Davis Floyd<!-- --> <span>Wordpress</span></h3><p>I created the carousel animation on the Markets page and worked on the timeline on the about.</p><a class="btn" href="https://www.davisfloyd.com" target="_blank">Visit <!-- -->Davis Floyd</a></div></article></div><div class="item" data-index="5"><article class=" project" aria-expanded="false"><img src="assets/media/kroegermarine.png.webp" alt="Kroeger Marine Docks."/><div class="content"><h3>Kroeger Marine<!-- --> <span>Wordpress</span></h3><p>I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.</p><a class="btn" href="https://www.kroegermarine.com" target="_blank">Visit <!-- -->Kroeger Marine</a></div></article></div><div class="item" data-index="6"><article class=" project" aria-expanded="false"><img src="assets/media/vivepsych.png.webp" alt="Vive Psyche located in Greenville, SC."/><div class="content"><h3>Vive Psych<!-- --> <span>Wordpress</span></h3><p>I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.</p><a class="btn" href="https://vivepsych.com" target="_blank">Visit <!-- -->Vive Psych</a></div></article></div><div class="item" data-index="7"><article class=" project" aria-expanded="false"><img src="assets/media/coretransformers.png.webp" alt="The Core Transformers Wordpress site."/><div class="content"><h3>Core Transformers<!-- --> <span>Wordpress &amp; BigCommerce</span></h3><p>I was the sole developer for this project. I also gave their bigcommerce store a css update to match the wordpress site&#x27;s brand.</p><a class="btn" href="https://coretransformers.com" target="_blank">Visit <!-- -->Core Transformers</a></div></article></div><div class="item" data-index="8"><article class=" project" aria-expanded="false"><img src="assets/media/parksideob-gyn.png.webp" alt="Parkside OB-GYN. Modern Women, Modern Care."/><div class="content"><h3>Parkside OB-GYN<!-- --> <span>Wordpress</span></h3><p>I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.</p><a class="btn" href="https://parksideob-gyn.com" target="_blank">Visit <!-- -->Parkside OB-GYN</a></div></article></div></div><div class="track-controls"><div class="prev"></div><div class="next"></div><div class="pause"></div></div></div></div>
+            <noscript>
+                <article>
+                    <img src="assets/media/seed.png.webp" alt="The Seed Website's landing page for its blog." />
+                    <div class="content">
+                        <h3>Seed <span>Wordpress</span></h3>
+                        <p>I helped with the responsiveness of the landing page and I built the new blog post template utilizing
+                            custom Gutenberg Blocks for a hassle-free backend content management experience.</p>
+                        <a class="btn" href="https://seed.com/cultured" target="_blank">
+                            Visit Seed
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/brmc.png.webp" alt="The BRMC Website's home page" />
+                    <div class="content">
+                        <h3>BRMC <span>Wordpress</span></h3>
+                        <p>I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party
+                            CRM, into the theme for this code so that we could build custom forms to capture leads but continue to
+                            utilize Hubspot's workflows for automating the life of the lead.</p>
+                        <a class="btn" href="https://blueridgemountainclub.com" target="_blank">
+                            Visit Blue Ridge Mountain Club
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/organicolivia.png.webp"
+                        alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine.">
+                    <div class="content">
+                        <h3>Organic Olivia <span>Shopify</span></h3>
+                        <p>I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to
+                            handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the
+                            User Experience.</p>
+                        <a class="btn" href="https://organicolivia.com" target="_blank">
+                            Visit Organic Olivia
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/insignispartners.png.webp"
+                        alt="The insignis partners website. An Investment and Real Estate Development firm.">
+                    <div class="content">
+                        <h3>Insignis Partners <span>Wordpress</span></h3>
+                        <p>I enjoyed creating the animations and interactivity on the portfolio page. We used advanced custom fields
+                            to give the client the ability to update their staff.</p>
+                        <a class="btn" href="https://insignispartners.com" target="_blank">
+                            Visit Insignis Partners
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/davisfloyd.png.webp" alt="Davis Floyd Civil Construction.">
+                    <div class="content">
+                        <h3>Davis Floyd <span>Wordpress</span></h3>
+                        <p>I created the carousel animation on the Markets page and worked on the timeline on the about.</p>
+                        <a class="btn" href="https://www.davisfloyd.com" target="_blank">
+                            Visit Davis Floyd
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/kroegermarine.png.webp" alt="Kroeger Marine Docks.">
+                    <div class="content">
+                        <h3>Kroeger Marine <span>Wordpress</span></h3>
+                        <p>I created the filter for the recycle your docks program. I helped make the custom cursor responsive when
+                            it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in
+                            Mailchimp.</p>
+                        <a class="btn" href="https://www.kroegermarine.com" target="_blank">
+                            Visit Kroeger Marine
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/vivepsych.png.webp" alt="Vive Psyche located in Greenville, SC.">
+                    <div class="content">
+                        <h3>Vive Psych <span>Wordpress</span></h3>
+                        <p>This theme had started as a block builder with DIVI and then we started using php page templates that
+                            used DIVI for a section within the custom page template. In addition I managed the Staff Mailchimp
+                            Customer Journeys and developed email templates with Stripo.</p>
+                        <a class="btn" href="https://vivepsych.com" target="_blank">
+                            Visit Vive Psych
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/coretransformers.png.webp" alt="The Core Transformers Wordpress site.">
+                    <div class="content">
+                        <h3>Core Transformers <span>Wordpress</span></h3>
+                        <p>I was the sole developer for this project. I also gave their bigcommerce store a css update to match the
+                            wordpress site's brand.</p>
+                        <a class="btn" href="https://coretransformers.com" target="_blank">
+                            Visit Core Transformers
+                        </a>
+                    </div>
+                </article>
+            
+                <article>
+                    <img src="assets/media/parksideob-gyn.png.webp" alt="Parkside OB-GYN. Modern Women, Modern Care.">
+                    <div class="content">
+                        <h3>Parkside OB-GYN <span>Wordpress</span></h3>
+                        <p>I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.
+                        </p>
+                        <a class="btn" href="https://parksideob-gyn.com" target="_blank">
+                            Visit Parkside OB-GYN
+                        </a>
+                    </div>
+                </article>
+            
+            </noscript>
+        </section>
 
-            <article>
-                <img src="assets/media/brmc.png.webp" alt="The BRMC Website's home page">
-                <div class="content">
-                    <h3>BRMC <span>Wordpress</span></h3>
-                    <p>I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party CRM, into the theme for this code so that we could build custom forms to capture leads but continue to utilize Hubspot's workflows for automating the life of the lead.</p>
-                    <a class="btn" href="https://blueridgemountainclub.com" target="_blank">
-                        Visit Blue Ridge Mountain Club
-                    </a>
-                </div>
-            </article>
-
-            <article>
-                <img src="assets/media/organicolivia.png.webp" alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine.">
-                <div class="content">
-                    <h3>Organic Olivia <span>Shopify</span></h3>
-                    <p>I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the User Experience.</p>
-                    <a class="btn" href="https://organicolivia.com" target="_blank">
-                        Visit Organic Olivia
-                    </a>
-                </div>
-            </article>
+        <section class="contact">
+            <a href="https://www.linkedin.com/in/calvin-anderson-22b601ba/" target="_blank" class="btn">LinkedIn</a>
+            <a href="https://github.com/canderson9625" target="_blank" class="btn">Github</a>
+            <a href="/assets/resume--2023.pdf" target="_blank" class="btn">Resume</a>
+            <a href="mailto:canderson9625@gmail.com" class="btn">Email</a>
         </section>
     </main>
 </body>

@@ -1,0 +1,39 @@
+.carousel {
+    cursor: grab;
+    width: 100%;
+    overflow: hidden;
+
+    * {
+        user-select: none;
+    }
+
+    .track {
+        display: flex;
+        margin: 0 -16px;
+
+        > .item {
+            align-items: stretch;
+            display: flex;
+            flex-basis: 25%;
+            flex-shrink: 0;
+            justify-content: center;
+            margin-left: 16px;
+            margin-right: 16px;
+            width: clamp(250px, 90%, 75vw);
+            
+            // &:hover,
+            &.active {
+                flex-basis: 95%;
+                width: inherit;
+            }
+        }
+    }
+
+    // @media (prefers-reduced-motion: no-preference) {
+    //     .track {
+    //         > * {
+    //             transition: all 0.3s, flex-shrink 0.3s 0.3s;
+    //         }
+    //     }
+    // }
+}

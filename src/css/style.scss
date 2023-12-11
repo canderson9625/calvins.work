@@ -1,46 +1,8 @@
-@use 'mixins';
+@import 'mixins';
+@import 'components/components';
 
-$orange: #f59725;
-$deep: #f57e53;
-$pink: #ce6ab0;
-$purple: #985277;
-$royal: #4b375c;
-
-// opacity max 33
-$op_or: #f5d0a4;
-$op_de: #f5baa4;
-$op_pi: #cf8aba;
-$op_pu: #996781;
-$op_ro: #4e3e5c;
-
-// brightness min 90
-$br_or: #f5d0a4; //96
-$br_de: #f5baa4; //96
-$br_pi: #e69acf; //90
-$br_pu: #e69ac1; //90
-$br_ro: #c29ae6; //90
-
-// alpha min 50
-$al_ro: #c29ae654;
-$al_pu: #e69ac154;
-$al_pi: #e69acf54;
-$al_de: #f5baa454;
-$al_or: #f5d0a454;
-
-// $peach: #ffcdb2;
-
-// $orange: #ffb4a2;
-// $pink: #e5989b;
-// $slate-pink: #b5838d;
-// $grey--purple: #6d6875;
-
-// $hotpink: #ff69eb;
-// $pink: #ff86c8;
-// $pink-orange: #ffa3a5;
-// $orange: #ffbf81;
-// $yellow: #ffdc5e;
 :root {
-    --light: ;
+    // --light: ;
 }
 
 html {
@@ -54,10 +16,11 @@ html {
         background: white;
     }
 
-    &.time {
-        --time: hsl(0, 0, var(--light));
-        background: var(--time);
-    }
+    // &.time {
+    //    TODO: time of day influence on background
+    //     --time: hsl(0, 0, var(--light));
+    //     background: var(--time);
+    // }
 
     h1,
     h2,
@@ -73,27 +36,15 @@ html {
 
 body {
     position: relative;
-    // background: linear-gradient(
-    //     145deg,
-    //     $al_or 20%,
-    //     $al_de 30%,
-    //     $al_pi 65%,
-    //     $al_pu 80%,
-    //     $al_ro
-    // ) no-repeat fixed;
     background-attachment: fixed;
     background-image: url('../media/bg.png.webp');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
-    // margin: 24px;
     min-width: 280px;
     margin: 0;
     padding: 8px;
-    // color: orange;
     color: #fee0e0;
-    // filter: hue-rotate(33deg);
-    // animation: filter-rotate infinite 5s 1s linear
     font-family: 'Expletus Sans', 'Noto Sans';
     
     &::before {
@@ -104,8 +55,6 @@ body {
         height: 100%;
         left: 0;
         top: 0;
-        // backdrop-filter: hue-rotate(45deg);
-        // animation: hue-rotate infinite 15s 1s linear
     }
 
     @media (min-width: 992px) {
@@ -113,16 +62,14 @@ body {
     }
 }
 
-// .shape {
-//     object-fit: contain;
-// }
+.shape {
+    object-fit: contain;
+}
 
 main {
     align-items: center;
     border-radius: 69px;
     box-sizing: border-box;
-    // backdrop-filter: hue-rotate(-33deg) blur(10px) opacity(0.75);
-    // border: 2px solid black;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -130,11 +77,6 @@ main {
     max-width: min(80vw, 1720px);
     min-height: 100vh;
     min-width: 100%;
-    // animation: hue-rotate infinite 15s linear;
-    // clip-path: ellipse(200% 50%);
-    // padding: 48px;
-    // @include mixins.neumorphic(8px, #dd714b, #ff8759);
-    // width: 80%;
 
     @media (min-width: 992px) {
         width: unset;
@@ -190,7 +132,6 @@ main {
 }
 
 section {
-    // background: black;
     border-radius: 4px;
     margin: 0 auto 48px;
     max-width: 1440px;
@@ -252,7 +193,6 @@ section {
     mix-blend-mode: luminosity;
     position: fixed;
     top: 0;
-    // transform: translate(-50%, -50%);
     transform: translateX(-50%);
     width: auto;
 
@@ -263,8 +203,6 @@ section {
         clip-path: polygon(0 0, 100% 100%, 0 100%);
         transform: rotate(45deg);
     }
-
-    // animated the shapes and make them move in an ascending order until looping through all shapes through 9
 }
 
 .header {
@@ -294,118 +232,33 @@ section {
 }
 
 .portfolio {
+    img {
+        pointer-events: none;
+        user-select: none;
+    }
 
-    article {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        overflow: hidden;
-        margin: 48px auto;
-        text-align: center;
+    .carousel .project {
 
-        img {
-            max-height: min(90vh, 500px);
-            border-radius: 50px;
-            width: 100%;
-            object-fit: cover;
-            object-position: center top;
+        @media (min-width: 992px) {
+            margin: unset !important;
         }
+    }
+}
 
-        .content {
-            background: rgba(61,47,55,.975);
-            border-radius: 8px;
-            margin-top: -48px;
-            padding: 24px;
-            width: 90%;
+.contact {
 
-            h3 {
-                margin: 0;
+    .btn {
+        display: block;
+        margin: 14px 0;
 
-                span {
-                    display: block;
-                    margin: inherit;
-                    font-style: italic;
-                    font-size: max(11px, .75em);
-                }
-            }
-
-            p {
-                margin: 16px 0;
-            }
+        &:nth-child(1) {
+            margin-top: 0;
         }
     }
 
-    @media (min-width: 992px) {
-        article {
-            border-radius: 50px;
-            margin: 48px auto;
-            max-height: min(80vh, 720px);
-            overflow: hidden;
-            transition: width 0.3s;
-            width: 75%;
-            text-align: center;
-
-            img {
-                position: relative;
-                left: 50%;
-                transform: translateX(-50%);
-                transition: transform 0.3s;
-                width: 100%;
-                max-height: unset;
-            }
-
-            .content {
-                align-items: center;
-                background: rgba(61,47,55,.975);
-                bottom: 0;
-                clip-path: ellipse(100% 150% at 0% 50%);
-                display: flex;
-                flex-direction: column;
-                height: 0%;
-                justify-content: center;
-                left: 0;
-                max-width: 420px;
-                min-width: 25%;
-                opacity: 0;
-                padding-left: 24px;
-                padding-right: 72px;
-                position: absolute;
-                transform: translateX(-133%) scale(1.125);
-                transition: transform 1.618s 0s, opacity 0.3s, height 0s 0.3s;
-                width: 33%;
-
-                h3 {
-                    margin: 0;
-
-                    span {
-                        display: block;
-                        margin: inherit;
-                        font-style: italic;
-                        font-size: max(11px, .75em);
-                    }
-                }
-
-                p {
-                    margin: 16px 0;
-                }
-            }
-
-            &:hover {
-                width: 100%;
-
-                img {
-                    transition: transform 1.618s .809s ease-in-out;
-                    transform: translate(-50%, -50%);
-                }
-
-                .content {
-                    height: 100%;
-                    opacity: 1;
-                    transform: translateX(0%);
-                    transition: transform .809s 1.618s ease-in-out;
-                }
-            }
+    @media (min-width: 600px) {
+        .btn {
+            display: inline-block;
         }
     }
 }
@@ -425,27 +278,6 @@ section {
     }
 }
 
-.btn {
-    // background-image: linear-gradient(33deg, $br_pi 0%, $br_de 100%);
-    background-image: linear-gradient(33deg, $br_pi 45%, $br_de 55%, $br_de 95%, $br_pi 100%);
-    background-position: 10% 50%;
-    background-size: 200% 200%;
-    color: black;
-    display: inline-block;
-    font-weight: bold;
-    padding: 0.75em 1.5em;
-    text-decoration: none;
-    transition-duration: 0.3s;
-    transition-property: background-image, background-position;
-    // clip-path: path('M25,25 c5,-5 5,-15 150,0 s-10,10 0,150 s-20,-10 -150,0 s0,0 0,-149 Z');
-
-    &:hover {
-        transition-duration: .809s;
-        background-position: 95% 50%;
-        transition-timing-function: cubic-bezier(0.75, 0.1, 0.5, 0.9);
-    }
-}
-
 @font-face {
     font-family: "Expletus Sans";
     src: url('../fonts/Expletus_Sans/ExpletusSans-VariableFont_wght.ttf') format("TrueType");
@@ -460,4 +292,19 @@ section {
 @font-face {
     font-family: "Hack";
     src: url('../fonts/Hack/HackNerdFont-Regular.ttf') format("TrueType");
+}
+
+// TODO: reduced animations
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        background-attachment: initial !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+        transition-delay: 1ms !important;
+    }
 }

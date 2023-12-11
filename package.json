@@ -5,11 +5,11 @@
     "main": "server.js",
     "type": "module",
     "scripts": {
-        "start": "supervisor -q -e html,ts,tsx,scss,json -i node_modules,bex server.js",
+        "start": "npm run server && node server.js -ssr --compile",
         "build": "npm run css && npm run js",
-        "css": "sass src/css:dist/assets/css && postcss dist/assets/css/style.css -r",
-        "js": "esbuild src/ts/* --bundle --minify --sourcemap --allow-overwrite --outdir=dist/assets/js --log-level=warning",
-        "generate-cert": "sh ssl/generate-cert.sh"
+        "css": "sass src/css/style.scss:dist/assets/css/style.css && postcss dist/assets/css/style.css -r",
+        "js": "esbuild src/client.tsx --bundle --minify --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
+        "server": "esbuild src/server.tsx --bundle --minify --outfile=server.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external"
     },
     "repository": {
         "type": "git",
@@ -18,11 +18,15 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "devDependencies": {
+        "@types/connect-livereload": "^0.6.3",
         "@types/express": "^4.17.17",
         "@types/jest": "^29.5.3",
+        "@types/livereload": "^0.9.5",
         "@types/node": "^20.4.2",
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
@@ -37,10 +41,8 @@
         "postcss": "^8.4.24",
         "postcss-cli": "^10.1.0",
         "postcss-load-config": "^4.0.1",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
         "sass": "^1.63.6",
-        "sharp": "^0.32.1",
+        "sharp": "^0.32.6",
         "typescript": "^5.1.6"
     },
     "cssnano": {
