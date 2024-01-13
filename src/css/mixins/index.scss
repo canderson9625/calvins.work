@@ -1,3 +1,6 @@
+@import 'a11y';
+@import 'fonts';
+
 // Using HSB
 $orange: #f59725; // 33 85 96
 $deep: #f57e53; // 16 66 96
@@ -25,25 +28,6 @@ $al_de: #f5baa454;
 $al_pi: #e69acf54;
 $al_pu: #e69ac154;
 $al_ro: #c29ae654;
-
-.btn {
-    background-image: linear-gradient(33deg, $br_pi 45%, $br_de 55%, $br_de 95%, $br_pi 100%);
-    background-position: 10% 50%;
-    background-size: 200% 200%;
-    color: black;
-    display: inline-block;
-    font-weight: bold;
-    padding: 0.75em 1.5em;
-    text-decoration: none;
-    transition-duration: 0.3s;
-    transition-property: background-image, background-position;
-
-    &:hover {
-        transition-duration: .809s;
-        background-position: 95% 50%;
-        transition-timing-function: cubic-bezier(0.75, 0.1, 0.5, 0.9);
-    }
-}
 
 @mixin sunset-gradient {
     background: linear-gradient(

@@ -12,6 +12,13 @@
         "strict": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true, /* Implies 'allowSyntheticDefaultImports'. */
+        "types": [
+            "bun-types"
+        ],
+        "paths": {
+            "@*": ["./src/ts/*"]
+        },
     },
-    "exclude": ["node_modules", "dist", "server.js"]
+    "exclude": ["node_modules", "dist", "server.js"],
+    "loader": "esbuild=loader"
 }

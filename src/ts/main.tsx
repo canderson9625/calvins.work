@@ -1,19 +1,16 @@
 // importing require tsconfig.json "compilerOptions": { "esModuleInterop": true }
-import React, { 
-    useState,
-    useCallback
-} from "react";
+import React from "react";
 
-import { 
-    Carousel, 
-    Projects
-} from "./components/components";
+import { Carousel } from "@components";
+import { Projects } from "@components/carousel/constants";
 
 export default function App() {
 
     return(<>
-        <Carousel>
-            { Projects }
-        </Carousel>
+        <React.StrictMode>
+            <Carousel>
+                { Projects }
+            </Carousel>
+        </React.StrictMode>
     </>)
 };

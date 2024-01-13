@@ -1,19 +1,80 @@
-// Consolidate Components into one exports file
+// Consolidate constants into one file
+import React, { FocusEventHandler, MouseEvent, TouchEvent, createContext } from 'react';
+import { Project } from '@components';
 
-import React, {
-    MouseEvent,
-    TouchEvent
-} from 'react';
+// custom event type for the carousel to use
+type Evt = {
+    target?: {
+        clientX: number, // for cursor x position
+        closest: Element // for finding the closest parent
+    } & Element;
+} & MouseEvent<any> & TouchEvent<any> & MouseEvent & FocusEventHandler<any> & EventTarget & HTMLDivElement;
 
-// custom event type for the components to use
-type Evt = {clientX: number, closest: Element} & MouseEvent<any> & TouchEvent<any>;
-import Carousel from "./carousel/carousel";
-import Project from "./project/project";
+type carouselAction = {
+    actionType: string | actionTypeStates,
+    data?: Evt|any
+};
 
+type carouselState = {
+    activeSlide: number;
+    animationDuration?: number;
+    autoplay?: boolean;
+    carouselResetTimer: NodeJS.Timeout|null; // time until carousel resets to neutral state
+    countOfSlides: number;
+    dragDistance: number; 
+    deadZone: number;
+    firstX: number; // the first client x value when user starts dragging
+    playAnimations: boolean;
+    negativeOffsetOrigin: number; // translate the track by slidesToClone
+    slidesToClone: number;
+    trackState: trackStateTitle; // the current state of the track
+}
+
+enum trackStateTitle {
+    Initialize,
+    Stopped, // neutral
+    Playing, // auto scroll
+    Moving, // mid transition
+    Grabbed, // start listening to x movement from input
+    Focused, // a11y keyboard focus
+}
+
+enum actionTypeStates {
+    Focus,   // keyboard focus
+    Hovered, // cursor state
+    Grab,    // cursor state
+    Release, // cursor state
+    Move,    // cursor state
+};
+
+// a11y first
+const CarouselDefaults: carouselState = {
+    activeSlide: 0,
+    animationDuration: 300,
+    carouselResetTimer: null,
+    countOfSlides: 0,
+    deadZone: 20,
+    dragDistance: 0,
+    firstX: 0,
+    negativeOffsetOrigin: 0,
+    playAnimations: true,
+    slidesToClone: 4,
+    trackState: trackStateTitle['Initialize'], 
+}
+
+const CarouselContext = createContext(
+    {
+        state: CarouselDefaults,
+        dispatch: (() => {}) as React.Dispatch<carouselAction>
+    }
+);
+
+// TODO: replace with graphql
 const Projects = [
     <Project 
         key={ 'proj-seed' }
-        img={ <img src="assets/media/seed.png.webp" alt="The Seed Website's landing page for its blog." /> } 
+        srcSlug='seed'
+        alt="The Seed Website's landing page for its blog."
         title="Seed" 
         subtitle="Wordpress" 
         btn_href="https://seed.com/cultured">
@@ -22,7 +83,8 @@ const Projects = [
 
     <Project 
         key={ 'proj-brmc' }
-        img={ <img src="assets/media/brmc.png.webp" alt="The BRMC Website's home page" /> } 
+        srcSlug='brmc'
+        alt="The BRMC Website's home page."
         title="BRMC" 
         subtitle="Wordpress" 
         btn_href="https://blueridgemountainclub.com">
@@ -31,7 +93,8 @@ const Projects = [
 
     <Project 
         key={ 'proj-organic_olivia' }
-        img={ <img src="assets/media/organicolivia.png.webp" alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine." /> } 
+        srcSlug='organicolivia'
+        alt="The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine."
         title="Organic Olivia" 
         subtitle="Shopify" 
         btn_href="https://organicolivia.com">
@@ -40,7 +103,8 @@ const Projects = [
 
     <Project 
         key={ 'proj-insignis_partners' }
-        img={ <img src="assets/media/insignispartners.png.webp" alt="The insignis partners website. An Investment and Real Estate Development firm." /> } 
+        srcSlug='insignispartners'
+        alt="The insignis partners website. An Investment and Real Estate Development firm."
         title="Insignis Partners" 
         subtitle="Wordpress" 
         btn_href="https://insignispartners.com">
@@ -49,7 +113,8 @@ const Projects = [
 
     <Project 
     key={ 'proj-davis_floyd' }
-        img={ <img src="assets/media/davisfloyd.png.webp" alt="Davis Floyd Civil Construction." /> } 
+        srcSlug='davisfloyd'
+        alt="Davis Floyd Civil Construction."
         title="Davis Floyd" 
         subtitle="Wordpress" 
         btn_href="https://www.davisfloyd.com">
@@ -58,7 +123,8 @@ const Projects = [
 
     <Project 
     key={ 'proj-kroeger_marine' }
-        img={ <img src="assets/media/kroegermarine.png.webp" alt="Kroeger Marine Docks." /> } 
+        srcSlug='kroegermarine'
+        alt="Kroeger Marine Docks."
         title="Kroeger Marine" 
         subtitle="Wordpress" 
         btn_href="https://www.kroegermarine.com">
@@ -67,7 +133,8 @@ const Projects = [
 
     <Project 
         key={ 'proj-vive_psych' }
-        img={ <img src="assets/media/vivepsych.png.webp" alt="Vive Psyche located in Greenville, SC." /> } 
+        srcSlug='vivepsych'
+        alt="Vive Psyche located in Greenville, SC."
         title="Vive Psych" 
         subtitle="Wordpress" 
         btn_href="https://vivepsych.com">
@@ -76,7 +143,8 @@ const Projects = [
 
     <Project 
         key={ 'proj-core_transformers' }
-        img={ <img src="assets/media/coretransformers.png.webp" alt="The Core Transformers Wordpress site." /> } 
+        srcSlug='coretransformers'
+        alt='The Core Transformers Wordpress site.'
         title="Core Transformers" 
         subtitle="Wordpress & BigCommerce" 
         btn_href="https://coretransformers.com">
@@ -85,16 +153,22 @@ const Projects = [
     
     <Project 
         key={ 'proj-parkside_obgyn' }
-        img={ <img src="assets/media/parksideob-gyn.png.webp" alt="Parkside OB-GYN. Modern Women, Modern Care." /> } 
+        srcSlug={ 'parksideob-gyn' }
+        alt={ 'Parkside OB-GYN. Modern Women, Modern Care.'}
         title="Parkside OB-GYN" 
         subtitle="Wordpress" 
         btn_href="https://parksideob-gyn.com">
         <p>I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.</p>
     </Project>,
-]
+];
 
 export { 
-    Carousel,
+    actionTypeStates,
+    carouselAction,
+    CarouselContext,
+    CarouselDefaults,
+    carouselState,
+    Evt, 
     Projects,
-    Evt
+    trackStateTitle
 };

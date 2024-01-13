@@ -6,6 +6,8 @@ node_modules
 .DS_Store
 index.fig
 package-lock.json
+devserver.js
+ignore
 
 src/media
 dist/assets/fonts

@@ -1,20 +1,26 @@
 import React, { 
     ReactNode,
-    // useEffect,
     useState,
 } from "react";
-import { Evt } from '../components';
 
 enum projectStateEnum {
     Closed,
     Open
 }
 
-export default function Project(props: {
-    img: ReactNode,
+export default function Project({
+    srcSlug,
+    alt,
+    title,
+    subtitle,
+    children,
+    btn_href
+}: {
+    srcSlug?: string,
+    alt?: string,
     title: string,
-    subtitle: string,
-    children: ReactNode,
+    subtitle?: string,
+    children?: ReactNode,
     btn_href: string,
 }) {
 
@@ -22,33 +28,34 @@ export default function Project(props: {
     let classes = projectState === projectStateEnum['Closed'] ? '' : 'expanded';
     classes += ' project';
 
-    function projectExpand(e: Evt) {
+    function projectExpand() {
         setProjectState(projectStateEnum['Open']);
     }
 
-    function projectRevert(e: Evt) {
+    function projectRevert() {
         setProjectState(projectStateEnum['Closed']);
     }
 
-    // useEffect(() => {
-    //     May be used
-    //     return () => {
-    //          to clean up
-    //     }
-    // })
-
     return (<>
         <article className={classes} 
-            onClick={(e: Evt) => projectExpand(e)} 
-            onMouseLeave={(e: Evt) => projectRevert(e)}
+            onClick={() => projectExpand()} 
+            onMouseLeave={() => projectRevert()}
+            // onMouseLeave={(e: Evt) => projectRevert(e)}
             aria-expanded={projectState === projectStateEnum['Open'] ? true : false}
             >
-            { props.img }
+            { 
+                <picture>
+                    <source srcSet={`assets/media/${srcSlug}.png.webp`} type="image/webp"/>
+                    <source srcSet={`assets/media/${srcSlug}.png`} type="image/png"/>
+                    <img src={`assets/media/${srcSlug}.png.webp`} alt={alt ?? ""}  />
+                </picture>
+            }
+
             <div className="content">
-                <h3>{ props.title } <span>{ props.subtitle }</span></h3>
-                { props.children }
-                <a className="btn" href={ props.btn_href } target="_blank">
-                    Visit { props.title }
+                <h3>{ title } <span>{ subtitle }</span></h3>
+                { children }
+                <a className="btn" href={ btn_href } target="_blank">
+                    Visit { title }
                 </a>
             </div>
         </article>

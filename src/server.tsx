@@ -2,7 +2,8 @@ import { argv } from 'node:process';
 const BUILD = {
     "sharp": false,
     "compile": false,
-    "ssr": false
+    "ssr": false,
+    "dev": false,
 }
 argv.forEach((val, index) => {
     if ( index < 2 ) {
@@ -24,8 +25,6 @@ import * as path from 'path';
 import { execSync } from 'child_process'; // to run our npm scripts
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-import liveReload from 'livereload';
-import connectLiveReload from 'connect-livereload';
 
 // Build related imports
 import fs from 'fs';
@@ -46,14 +45,21 @@ function build () {
                 sharp(path.resolve(__dirname + '/src/media/' + file))
                     .toFormat('webp')
                     .toFile(path.resolve(__dirname + '/dist/assets/media/' + file + '.webp'));
+
+                // copy the originals
+                fs.copyFileSync(path.resolve(__dirname + '/src/media/' + file), path.resolve(__dirname + '/dist/assets/media/' + file));
             });
         });
     }
 
-    if ( BUILD.compile ) {
+    if ( !BUILD.dev && BUILD.compile ) {
         console.log('Compiling assets with esbuild');
         // execSync('npm run build', {stdio: 'inherit'});
         execSync('npm run build');
+    }
+    
+    if ( BUILD.dev ) {
+        execSync('npm run css && npm run devjs');
     }
 
     if ( BUILD.ssr ) {
@@ -75,23 +81,16 @@ function build () {
 }
 build();
 
-//Live Reload
-const liveReloadServer = liveReload.createServer();
-liveReloadServer.server.once("connection", () => {
-    setTimeout(() => {
-        console.log('reload requested');
-        liveReloadServer.refresh("/");
-    }, 100);
-});
-liveReloadServer.watch([path.join(__dirname + '/dist'), path.join(__dirname + '/dist/index.html')]);
-app.use(connectLiveReload());
-
 app.use(express.static(path.resolve(__dirname + '/dist')));
+app.use(express.static(path.resolve(__dirname + '/src')));
 const PORT = process.env.PORT || 80;
 app.listen(PORT, () => {
     console.log('started on port ' + PORT);
 });
 
 // Shutdown server gracefully in docker
+process.on('SIGINT', () => {
+    console.log('Received SIGINT. Goodbye.');
+    process.exit();
+});
 process.on('SIGTERM', process.exit);
-process.on('SIGINT', process.exit);

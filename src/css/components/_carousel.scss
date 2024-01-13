@@ -10,6 +10,8 @@
     .track {
         display: flex;
         margin: 0 -16px;
+        will-change: translate;
+        transform: translateZ(0);
 
         > .item {
             align-items: stretch;
@@ -23,10 +25,25 @@
             
             // &:hover,
             &.active {
-                flex-basis: 95%;
+                flex-basis: var(--active-width);
                 width: inherit;
             }
+
+            * {
+                pointer-events: none;
+            }
+
+            &:focus-within {
+                @include a11y-focus;
+            }
         }
+    }
+
+    #dev-info {
+        @include sunset-gradient;
+        color: black;
+        padding: 2rem;
+        margin: 1.15rem;
     }
 
     // @media (prefers-reduced-motion: no-preference) {

@@ -1,0 +1,2 @@
+# Project 
+This component is to ensure all projects have a consistent WCAG2.1+ compliance, placing additional `<img />` in the project component will still ensure that an alt tag is given to the children the same way
