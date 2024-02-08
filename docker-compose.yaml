@@ -6,3 +6,5 @@ services:
     tty: true
     ports: 
       - 80:80
+    # volumes:
+      # - ./dist/:/home/node/dist/:ro

@@ -5,6 +5,7 @@ import React, {
     useEffect,
     useReducer,
     useRef,
+    useState,
 } from "react";
 import { actionTypeStates, carouselAction, CarouselContext, CarouselDefaults, carouselState, Evt, trackStateTitle } from '@components/carousel/constants';
 import CarouselControls from "./controls";
@@ -16,10 +17,10 @@ function reducerHandler(state: carouselState, action: carouselAction): carouselS
     let result;
     switch ( actionType ) {
         case 'Initialize' :
-            result = { ...state,
-                ...action.data,
-                trackState: true === action.data.playAnimations ? trackStateTitle['Playing'] : trackStateTitle['Stopped'],
-            }
+            result = { ...state, ...action.data, trackState: trackStateTitle['Stopped'] }
+            break;
+        case 'Update' :
+            result = { ...state, ...action.data }
             break;
         case actionTypeStates['Focus'] :
             result = { ...state, trackState: trackStateTitle['Focused'] };
@@ -27,17 +28,19 @@ function reducerHandler(state: carouselState, action: carouselAction): carouselS
         case actionTypeStates['Grab'] :
             result = { ...state, trackState: trackStateTitle['Grabbed'], firstX: action.data };
             break;
-        case 'animate' : 
-            result = { ...state, carouselResetTimer: action.data }
-            break;
         case actionTypeStates['Move'] :
             result = { ...state, trackState: trackStateTitle['Moving'], dragDistance: action.data.dragDistance };
             break;
         case actionTypeStates['Release'] :
-            result = { ...state, trackState: trackStateTitle['Playing'], firstX: 0, dragDistance: 0, activeSlide: action.data?.activeSlide < 0 ? 0 : action.data.activeSlide };
+            result = { ...state, trackState: trackStateTitle['Playing'], firstX: 0, 
+            // dragDistance: 0, 
+            activeSlide: action.data?.activeSlide < 0 ? 0 : action.data.activeSlide };
+            break;
+        case 'animate' : 
+            result = { ...state, carouselResetTimer: action.data }
             break;
         case 'stopAnimation' : 
-            result = { ...state, trackState: trackStateTitle['Stopped'], carouselResetTimer: null }
+            result = { ...state, trackState: trackStateTitle['Stopped'], carouselResetTimer: null, dragDistance: 0 }
             break;
         default:
             result = { ...state }; 
@@ -53,8 +56,10 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
 
     const carouselRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
+    const eventRef = useRef<Evt | null>(null);
     const [ state, dispatch ] = useReducer(reducerHandler, CarouselDefaults);
     const { 
+        activeSlide,
         carouselResetTimer,
         deadZone,
         dragDistance,
@@ -65,20 +70,44 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
         trackState,
     } = state;
 
-    const removableMoveCB = useCallback((x: any) => { delegatedMoveHandler(x as Evt) }, [trackState])
-    const removableReleaseCB = useCallback(() => { release() }, [trackState])
+    // console.log(trackStateTitle[trackState])
+
+    const removableMoveCB = (x: any) => { delegatedMoveHandler(x as Evt) }
+    const removableReleaseCB = () => { release() }
 
     // allow for animations if enabled
-    if ( playAnimations && carouselResetTimer === null && trackState === trackStateTitle['Playing'] ) {
+    if ( playAnimations && carouselResetTimer === null && trackState === trackStateTitle['Playing'] && carouselRef.current && trackRef.current ) {
+        const CAROUSEL = carouselRef.current;
+        const TRACK = trackRef.current;
+        const threshold = Math.round(dragDistance / (TRACK.children[1] as HTMLElement).offsetLeft * -1);
+        const math = negativeOffsetOrigin + (
+            threshold === 0 ? dragDistance 
+                : threshold > 0 ? (TRACK.children[1] as HTMLElement).offsetLeft + dragDistance
+                : - (TRACK.children[1] as HTMLElement).offsetLeft + dragDistance
+            )
+        // console.log("playing animation", negativeOffsetOrigin, threshold, dragDistance, math)
+
+        new Promise((resolve) => {
+            TRACK.style.setProperty("transition", `all 0ms`)
+            TRACK.style.setProperty("translate", `${math}px`)
+            resolve(null);
+        }).then(() => {
+            TRACK.style.setProperty("transition", `translate ${CAROUSEL.style.getPropertyValue("--transition-duration")}`)
+            TRACK.style.translate = `${negativeOffsetOrigin}px`;
+        })
         let timerID = setTimeout(() => { 
             dispatch({ actionType: 'stopAnimation' })
         }, state.animationDuration);
         dispatch({ actionType: 'animate', data: timerID })
     }
-
+    
     // reset carousel to origin
-    if ( trackRef.current !== null && (trackState === trackStateTitle['Playing'] || trackState === trackStateTitle['Stopped']) ) {
-        trackRef.current.style.translate = `${negativeOffsetOrigin}px`;
+    if ( trackRef.current !== null && trackState === trackStateTitle['Stopped'] ) {
+        const TRACK = trackRef.current;
+        TRACK.style.translate = `${negativeOffsetOrigin}px`;
+        if (playAnimations) {
+            TRACK.style.setProperty("transition", `all 0ms`)
+        }
     }
 
     function delegatedMoveHandler(e: Evt) {
@@ -109,9 +138,23 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
         }
     }
 
-    function focusCarousel(e: Evt) {
-        dispatch({ actionType: actionTypeStates['Focus'] });
+    const [isEventRefSet, setIsEventRefSet] = useState(false)
+    function setEventRef(e: Evt, next: (...args: any) => any) {
+        if ( e.type === "mouseleave" || e.type === "mouseup" && !isEventRefSet) {
+            setIsEventRefSet(true)
+        }
+        if ( e.type === "mouseup" || trackState === trackStateTitle['Focused'] && e.type === "mousedown" ) {
+            eventRef.current = e
+            setIsEventRefSet(false)
+        }
+        next(e)
+    }
 
+    function focusCarousel(e: Evt) {
+        if ( eventRef.current?.type === "mouseup" || trackState === trackStateTitle['Playing']) {
+            return
+        }
+        dispatch({ actionType: actionTypeStates['Focus'] });
         // const anchorTag = carouselRef.current?.querySelector('#beforeCarousel') as HTMLAnchorElement;
         // if ( e.type === 'focus' && anchorTag.dataset.focused === "true" ) {
         //     // anchorTag.focus();
@@ -123,24 +166,32 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
         }
     }
 
-    function release() {
+    function release(e?: Evt) {
+        if ( eventRef.current?.type !== "mouseup" || typeof e === "undefined") {
+            return
+        }
+
+        if (e?.type === "mouseleave") {
+            return dispatch({actionType: 'stopAnimation'})
+        }
+
         if ( carouselRef.current !== null && trackRef.current !== null ) {
             // reset cursor style
             carouselRef.current.style.cursor = 'grab';
         }
 
         if ( 
-            // playAnimations && 
-            dragDistance > deadZone || 
-            // playAnimations && 
-            dragDistance < (deadZone * -1) 
+            playAnimations && 
+            ( 
+                dragDistance > deadZone || 
+                dragDistance < (deadZone * -1) 
+            )
         ) {
             // user dragged and released
             const dragThreshold = (threshold = trackRef.current!.children[0].clientWidth) => {
                 // when threshold is breached, count as an increase
 
                 // a negative or positive value to indicate how many slides to move
-                // let dragThresholdVector = Math.round( dragDistance / (trackRef.current!.clientWidth * threshold ) );
                 let dragThresholdVector = Math.round( dragDistance / threshold ) * -1;
 
                 /*
@@ -154,9 +205,9 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
                     rollover = state.activeSlide + dragThresholdVector + countOfChildren;
                 } else if ( 
                     // positive value would go over countOfChildren
-                    state.activeSlide + dragThresholdVector > countOfChildren
+                    state.activeSlide + dragThresholdVector > (countOfChildren - 1)
                 ) {
-                    rollover = state.activeSlide + dragThresholdVector % countOfChildren;
+                    rollover = (state.activeSlide + dragThresholdVector) % countOfChildren;
                 }
 
                 return rollover ?? state.activeSlide + dragThresholdVector;
@@ -174,10 +225,14 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
         }
     }
 
-    useEffect(() => {   
+    useEffect(() => {    
         if ( trackState === trackStateTitle['Initialize'] && trackRef.current !== null ) {
             // false disables animations
-            const mediaQuery = true === window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : true;
+            const playAnimations = true === window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : true;
+
+            if (playAnimations && carouselRef.current) {
+                carouselRef.current.style.setProperty("--transition-duration", "300ms")
+            }
 
             let slide = trackRef.current.children![slidesToClone] as HTMLElement;
             let origin = slide.offsetLeft;
@@ -187,7 +242,7 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
             origin = (origin - margin) * -1; // update the origin with the margin
             trackRef.current.style.translate = `-${origin}px`; // sets the offset for the track which aligns after the cloned items
 
-            dispatch({ actionType: 'Initialize', data: { negativeOffsetOrigin: origin, playAnimations: mediaQuery, countOfSlides: countOfChildren }});
+            dispatch({ actionType: 'Initialize', data: { negativeOffsetOrigin: origin, playAnimations: playAnimations, countOfSlides: countOfChildren }});
         }
 
         document.addEventListener('mousemove', removableMoveCB);
@@ -202,14 +257,15 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
             document.removeEventListener('touchend', removableReleaseCB)
         }
     }, [
-        trackState
+        removableMoveCB,
+        removableReleaseCB
     ]);
 
     return (<>
         <div className="carousel"
             aria-label={ true === autoplay ? 'Projects Carousel with autoplay' : 'Projects Carousel' }
-            onMouseUp={release} onMouseLeave={release} onTouchEnd={release}
-            onMouseEnter={focusCarousel} onTouchStart={focusCarousel} onFocusCapture={(e: any) => focusCarousel(e)}
+            onMouseUp={(e: Evt) => {setEventRef(e, release)}} onMouseLeave={(e: Evt) => {setEventRef(e, release)}} onTouchEnd={(e: Evt) => {setEventRef(e, release)}}
+            onMouseEnter={(e: Evt) => setEventRef(e, focusCarousel)} onTouchStart={(e: Evt) => setEventRef(e, focusCarousel)} onFocusCapture={(e: any) => setEventRef(e, focusCarousel)}
             role="region"
             ref={carouselRef}
         >   
@@ -232,8 +288,11 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
                     { dragDistance < (deadZone * -1) ? '(<) ' : '' } 
                     { ` ${dragDistance} ` } 
                     { dragDistance > deadZone ? ' (>) ' : '' } 
-                    | DragThresholdRaw: { dragDistance % trackRef?.current?.children[0].clientWidth } 
-                    &nbsp;| DragThresholdPercent: { Math.round((dragDistance / trackRef?.current?.children[0].clientWidth * -1) * 100 ) / 100 }</h2>
+                    { trackRef.current !== null &&
+                        `| DragThresholdRaw: ${ dragDistance % trackRef.current.children[0].clientWidth } ` +
+                        `| DragThresholdPercent: ${ Math.round((dragDistance / trackRef.current.children[0].clientWidth * -1) * 100 ) / 100 }`
+                    }
+                </h2>
             </div>
             {
             /* 
@@ -242,8 +301,12 @@ export default function Carousel({ children, autoplay }: PropsWithChildren & { a
             }
 
             <CarouselContext.Provider value={{state: state, dispatch: dispatch}}>
-                <CarouselControls />
-                <CarouselTrack trackRef={trackRef} carouselRef={ carouselRef.current !== null ? carouselRef : { current: {} as HTMLDivElement } as MutableRefObject<HTMLDivElement> }>
+                <CarouselControls/>
+                <CarouselTrack 
+                    trackRef={trackRef} 
+                    carouselRef={ carouselRef.current !== null ? carouselRef : { current: {} as HTMLDivElement } as MutableRefObject<HTMLDivElement> }
+                    setEventRef={setEventRef}
+                >
                     { children }
                 </CarouselTrack>
             </CarouselContext.Provider>

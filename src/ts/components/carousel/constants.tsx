@@ -57,7 +57,7 @@ const CarouselDefaults: carouselState = {
     dragDistance: 0,
     firstX: 0,
     negativeOffsetOrigin: 0,
-    playAnimations: true,
+    playAnimations: false,
     slidesToClone: 4,
     trackState: trackStateTitle['Initialize'], 
 }

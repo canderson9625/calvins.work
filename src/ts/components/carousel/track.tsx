@@ -1,20 +1,19 @@
-import React, { useContext, useEffect } from 'react';
-import { actionTypeStates, carouselAction, CarouselContext, carouselState, Evt, trackStateTitle } from '@components/carousel/constants';
-import useForwardedRef from '@hooks/useForwardedRef';
+import React, { useContext } from 'react';
+import { actionTypeStates, CarouselContext, carouselState, Evt, trackStateTitle } from '@components/carousel/constants';
 
 type trackProps = { 
     trackRef: React.RefObject<HTMLDivElement>;
     carouselRef: React.MutableRefObject<HTMLDivElement | null>;
+    setEventRef: (...args: any) => any;
 } & React.PropsWithChildren;
 
 export default function CarouselTrack(props: trackProps) {
     const { 
         children,
         carouselRef,
-        trackRef
+        trackRef,
+        setEventRef,
     } = props;
-
-    // console.log(props);
 
     let countOfChildren: number = React.Children.count(children);
 
@@ -23,9 +22,8 @@ export default function CarouselTrack(props: trackProps) {
     const {
         activeSlide,
         slidesToClone,
+        trackState,
     } = state as carouselState;
-
-    // const forwardedTrack = useForwardedRef(trackRef);
 
     function userGrabbedCarousel(e: Evt) {
         // set firstX
@@ -39,7 +37,7 @@ export default function CarouselTrack(props: trackProps) {
 
     return (<>
         <div className="track"
-            onMouseDown={userGrabbedCarousel} onTouchStart={userGrabbedCarousel}
+            onMouseDown={(e: Evt) => setEventRef(e, userGrabbedCarousel)} onTouchStart={(e: Evt) => setEventRef(e, userGrabbedCarousel)}
             ref={trackRef}
             >
             { [...children as Iterable<React.ReactNode>].map((val, idx, arr) => {

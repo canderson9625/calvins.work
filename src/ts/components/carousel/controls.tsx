@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
+import { CarouselContext } from '@components/carousel/constants';
 
-type controlsProps = {
-    playAnimations?: boolean;
-    autoplay?: boolean;
-}
-export default function CarouselControls(props: controlsProps) {
+// type controlsProps = {
+//     playAnimations: boolean
+//     setPlayAnimations: Dispatch<SetStateAction<boolean>>
+//     autoplay?: boolean
+// }
+export default function CarouselControls(
+    // props: controlsProps
+    ) {
 
-    const { 
-        playAnimations 
-    } = props;
+    const { state, dispatch } = useContext(CarouselContext);
+    const {
+        playAnimations
+    } = state
 
     return (<>
         <div className="carousel-state-controls">
             <button className="toggle" 
-                // onClick={() => setPlayAnimations(prevState => !prevState)}
+                onClick={() => dispatch({actionType: "Update", data: { playAnimations: !playAnimations}})}
                 >
                 Toggle Animations { true === playAnimations ? 'Off' : 'On' }
             </button>

@@ -1,65 +1,69 @@
 {
-    "name": "server-root",
-    "version": "1.0.0",
-    "description": "local webserver",
-    "main": "server.js",
-    "type": "module",
-    "scripts": {
-        "start": "node server.js --ssr",
-        "build": "npm run css & npm run js",
-        "dev": "npm run devserver && node devserver.js --ssr --dev",
-        "sharp": "node server.js --sharp",
-        "css": "sass src/css/style.scss:dist/assets/css/style.css && postcss dist/assets/css/style.css -r",
-        "js": "esbuild src/client.tsx --bundle --minify --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
-        "devjs": "esbuild src/client.tsx --bundle --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
-        "server": "esbuild src/server.tsx --bundle --minify --outfile=server.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
-        "devserver": "esbuild src/server.tsx --bundle --outfile=devserver.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
-        "test": "vitest -r ./src/ --bail 3 --environment=jsdom"
-    },
-    "repository": {
-        "type": "git",
-        "url": "server_root"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "express": "^4.18.2",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0"
-    },
-    "devDependencies": {
-        "@testing-library/react": "^14.1.2",
-        "@types/connect-livereload": "^0.6.3",
-        "@types/express": "^4.17.17",
-        "@types/jest": "^29.5.3",
-        "@types/livereload": "^0.9.5",
-        "@types/node": "^20.4.2",
-        "@types/react": "^18.2.15",
-        "@types/react-dom": "^18.2.7",
-        "autoprefixer": "^10.4.14",
-        "connect-livereload": "^0.6.1",
-        "cssnano": "^6.0.1",
-        "cssnano-preset-advanced": "^6.0.1",
-        "dotenv": "^16.3.1",
-        "esbuild": "^0.18.11",
-        "eslint": "^8.43.0",
-        "jsdom": "^23.0.1",
-        "livereload": "^0.9.3",
-        "postcss": "^8.4.24",
-        "postcss-cli": "^10.1.0",
-        "postcss-load-config": "^4.0.1",
-        "sass": "^1.63.6",
-        "sharp": "^0.32.6",
-        "typescript": "^5.1.6",
-        "vitest": "^1.0.4"
-    },
-    "cssnano": {
-        "preset": "advanced"
-    },
-    "postcss": {
-        "plugins": {
-            "autoprefixer": {},
-            "cssnano": {}
-        }
+  "name": "server-root",
+  "version": "1.0.0",
+  "description": "local webserver",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js --ssr",
+    "build": "npm run css & npm run js",
+    "#dev": "node devserver.js --ssr",
+    "sharp": "node server.js --sharp",
+    "css": "sass src/css/style.scss:dist/assets/css/style.css && postcss dist/assets/css/style.css -r",
+    "js": "esbuild src/client.tsx --bundle --minify --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
+    "devjs": "esbuild src/client.tsx --bundle --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
+    "server": "esbuild src/server.tsx --bundle --minify --outfile=server.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
+    "#build:dev": "node src/build_devserver.js",
+    "test": "vitest -r ./src/ --bail 3 --environment=jsdom",
+    "dev:kill": "kill -9 $(lsof -ti:80)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "server_root"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^3.0.2",
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@types/browser-sync": "^2.29.0",
+    "@types/connect-livereload": "^0.6.3",
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.3",
+    "@types/livereload": "^0.9.5",
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.14",
+    "bun-types": "^1.0.21",
+    "connect-livereload": "^0.6.1",
+    "cssnano": "^6.0.1",
+    "cssnano-preset-advanced": "^6.0.1",
+    "dotenv": "^16.3.1",
+    "esbuild": "^0.18.11",
+    "eslint": "^8.43.0",
+    "jsdom": "^23.0.1",
+    "livereload": "^0.9.3",
+    "postcss": "^8.4.24",
+    "postcss-cli": "^10.1.0",
+    "postcss-load-config": "^4.0.1",
+    "sass": "^1.63.6",
+    "sharp": "^0.32.6",
+    "typescript": "^5.1.6",
+    "vitest": "^1.0.4"
+  },
+  "cssnano": {
+    "preset": "advanced"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {},
+      "cssnano": {}
     }
+  }
 }
