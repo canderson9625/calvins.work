@@ -1,0 +1,25 @@
+{
+   "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.fixAll.eslint": "explicit"
+   },
+   "editor.tabSize": 3,
+   "editor.formatOnSave": true,
+   "javascript.format.enable": false,
+   "typescript.preferences.importModuleSpecifier": "non-relative",
+   "[javascript]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+   },
+   "[javascriptreact]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+   },
+   "[typescript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "[typescriptreact]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "[markdown]": {
+      "editor.tabsize": 2
+   }
+}

@@ -22820,7 +22820,11 @@ var reducerHandler = function(state, action) {
   let result;
   switch (actionType) {
     case "Initialize":
-      result = { ...state, ...action.data, trackState: trackStateTitle["Stopped"] };
+      result = {
+        ...state,
+        ...action.data,
+        trackState: trackStateTitle["Stopped"]
+      };
       break;
     case "Update":
       result = { ...state, ...action.data };
@@ -22829,31 +22833,50 @@ var reducerHandler = function(state, action) {
       result = { ...state, trackState: trackStateTitle["Focused"] };
       break;
     case actionTypeStates["Grab"]:
-      result = { ...state, trackState: trackStateTitle["Grabbed"], firstX: action.data };
+      result = {
+        ...state,
+        trackState: trackStateTitle["Grabbed"],
+        firstX: action.data
+      };
       break;
     case actionTypeStates["Move"]:
-      result = { ...state, trackState: trackStateTitle["Moving"], dragDistance: action.data.dragDistance };
+      result = state.trackState === trackStateTitle["Moving"] || state.trackState === trackStateTitle["Grabbed"] ? {
+        ...state,
+        trackState: trackStateTitle["Moving"],
+        dragDistance: action.data.dragDistance
+      } : {
+        ...state
+      };
       break;
     case actionTypeStates["Release"]:
       result = {
         ...state,
         trackState: trackStateTitle["Playing"],
         firstX: 0,
-        activeSlide: action.data?.activeSlide < 0 ? 0 : action.data.activeSlide
+        activeSlide: action.data?.activeSlide < 0 ? 0 : action.data?.activeSlide ?? state.activeSlide
       };
       break;
     case "animate":
       result = { ...state, carouselResetTimer: action.data };
       break;
     case "stopAnimation":
-      result = { ...state, trackState: trackStateTitle["Stopped"], carouselResetTimer: null, dragDistance: 0 };
+      result = {
+        ...state,
+        trackState: trackStateTitle["Stopped"],
+        carouselResetTimer: null,
+        dragDistance: 0,
+        firstX: 0
+      };
       break;
     default:
       result = { ...state };
   }
   return result;
 };
-function Carousel({ children, autoplay }) {
+function Carousel({
+  children,
+  autoplay
+}) {
   let countOfChildren = import_react4.default.Children.count(children);
   const carouselRef = import_react4.useRef(null);
   const trackRef = import_react4.useRef(null);
@@ -22879,8 +22902,9 @@ function Carousel({ children, autoplay }) {
   if (playAnimations && carouselResetTimer === null && trackState === trackStateTitle["Playing"] && carouselRef.current && trackRef.current) {
     const CAROUSEL = carouselRef.current;
     const TRACK = trackRef.current;
+    const margin = (TRACK.children[1].offsetLeft - TRACK.children[0].offsetLeft - TRACK.children[1].clientWidth) / 2;
     const threshold = Math.round(dragDistance / TRACK.children[1].offsetLeft * -1);
-    const math = negativeOffsetOrigin + (threshold === 0 ? dragDistance : threshold > 0 ? TRACK.children[1].offsetLeft + dragDistance : -TRACK.children[1].offsetLeft + dragDistance);
+    const math = negativeOffsetOrigin + (threshold === 0 ? dragDistance : threshold > 0 ? TRACK.children[threshold].offsetLeft + dragDistance + margin : -TRACK.children[threshold * -1].offsetLeft + dragDistance + margin);
     new Promise((resolve) => {
       TRACK.style.setProperty("transition", `all 0ms`);
       TRACK.style.setProperty("translate", `${math}px`);
@@ -22942,17 +22966,17 @@ function Carousel({ children, autoplay }) {
     }
   }
   function release(e) {
+    if (e?.type === "mouseleave") {
+      return dispatch({ actionType: actionTypeStates["Release"] });
+    }
     if (eventRef.current?.type !== "mouseup" || typeof e === "undefined") {
       return;
-    }
-    if (e?.type === "mouseleave") {
-      return dispatch({ actionType: "stopAnimation" });
     }
     if (carouselRef.current !== null && trackRef.current !== null) {
       carouselRef.current.style.cursor = "grab";
     }
     if (playAnimations && (dragDistance > deadZone || dragDistance < deadZone * -1)) {
-      const dragThreshold = (threshold = trackRef.current.children[0].clientWidth) => {
+      const dragThreshold = (threshold = trackRef.current.children[1].offsetLeft) => {
         let dragThresholdVector = Math.round(dragDistance / threshold) * -1;
         let rollover = null;
         if (state.activeSlide + dragThresholdVector < 0) {
@@ -22983,7 +23007,14 @@ function Carousel({ children, autoplay }) {
       const margin = parseInt(window.getComputedStyle(slide).marginLeft, 10);
       origin = (origin - margin) * -1;
       trackRef.current.style.translate = `-${origin}px`;
-      dispatch({ actionType: "Initialize", data: { negativeOffsetOrigin: origin, playAnimations: playAnimations2, countOfSlides: countOfChildren } });
+      dispatch({
+        actionType: "Initialize",
+        data: {
+          negativeOffsetOrigin: origin,
+          playAnimations: playAnimations2,
+          countOfSlides: countOfChildren
+        }
+      });
     }
     document.addEventListener("mousemove", removableMoveCB);
     document.addEventListener("touchmove", removableMoveCB);
@@ -22995,10 +23026,7 @@ function Carousel({ children, autoplay }) {
       document.removeEventListener("mouseup", removableReleaseCB);
       document.removeEventListener("touchend", removableReleaseCB);
     };
-  }, [
-    removableMoveCB,
-    removableReleaseCB
-  ]);
+  }, [removableMoveCB, removableReleaseCB]);
   return import_react4.default.createElement(import_react4.default.Fragment, null, import_react4.default.createElement("div", {
     className: "carousel",
     "aria-label": autoplay === true ? "Projects Carousel with autoplay" : "Projects Carousel",
@@ -23023,11 +23051,13 @@ function Carousel({ children, autoplay }) {
     href: "#beyondCarousel"
   }), import_react4.default.createElement("div", {
     id: "dev-info"
-  }, playAnimations === true && import_react4.default.createElement("h2", null, "State: ", trackStateTitle[state.trackState]), import_react4.default.createElement("p", null, "Active Slide: ", state.activeSlide, " "), import_react4.default.createElement("h2", null, " Drag Distance:", dragDistance < deadZone * -1 ? "(<) " : "", ` ${dragDistance} `, dragDistance > deadZone ? " (>) " : "", trackRef.current !== null && `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth} ` + `| DragThresholdPercent: ${Math.round(dragDistance / trackRef.current.children[0].clientWidth * -1 * 100) / 100}`)), import_react4.default.createElement(CarouselContext.Provider, {
+  }, playAnimations === true && import_react4.default.createElement("h2", null, "State: ", trackStateTitle[state.trackState]), import_react4.default.createElement("p", null, "Active Slide: ", state.activeSlide, " "), import_react4.default.createElement("h2", null, "Drag Distance:", dragDistance < deadZone * -1 ? "(<) " : "", ` ${dragDistance} `, dragDistance > deadZone ? " (>) " : "", trackRef.current !== null && `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth} ` + `| DragThresholdPercent: ${Math.round(dragDistance / trackRef.current.children[0].clientWidth * -1 * 100) / 100}`)), import_react4.default.createElement(CarouselContext.Provider, {
     value: { state, dispatch }
   }, import_react4.default.createElement(CarouselControls, null), import_react4.default.createElement(CarouselTrack, {
     trackRef,
-    carouselRef: carouselRef.current !== null ? carouselRef : { current: {} },
+    carouselRef: carouselRef.current !== null ? carouselRef : {
+      current: {}
+    },
     setEventRef
   }, children)), trackState === trackStateTitle["Focused"] && import_react4.default.createElement("a", {
     "aria-label": "Move focus before carousel",
