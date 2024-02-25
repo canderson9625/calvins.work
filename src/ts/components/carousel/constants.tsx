@@ -24,6 +24,8 @@ type carouselState = {
    dragDistance: number;
    deadZone: number;
    firstX: number; // the first client x value when user starts dragging
+   focus: number;
+   intervalDuration?: number
    playAnimations: boolean;
    negativeOffsetOrigin: number; // translate the track by slidesToClone
    slidesToClone: number;
@@ -35,6 +37,7 @@ enum trackStateTitle {
    Stopped, // neutral
    Playing, // auto scroll
    Moving, // mid transition
+   Shift, // programmatically moved
    Grabbed, // start listening to x movement from input
    Focused, // a11y keyboard focus
 }
@@ -56,6 +59,8 @@ const CarouselDefaults: carouselState = {
    deadZone: 20,
    dragDistance: 0,
    firstX: 0,
+   focus: 0,
+   intervalDuration: 3000,
    negativeOffsetOrigin: 0,
    playAnimations: false,
    slidesToClone: 4,

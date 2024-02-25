@@ -19,6 +19,29 @@ import {
 import CarouselControls from "./controls";
 import CarouselTrack from "./track";
 
+function rolloverActiveSlide(state: carouselState, dragThresholdVector: number, maxVal: number) {
+   /*
+   * Check if the the active slide value should roll over
+   */
+   let rollover = null;
+   if (
+      // negative value would set activeSlide to a negative value
+      state.activeSlide + dragThresholdVector <
+      0
+   ) {
+      rollover = state.activeSlide + dragThresholdVector + maxVal;
+   } else if (
+      // positive value would go over maxVal
+      state.activeSlide + dragThresholdVector >
+      maxVal - 1
+   ) {
+      rollover =
+         (state.activeSlide + dragThresholdVector) % maxVal;
+   }
+
+   return rollover ?? state.activeSlide + dragThresholdVector;
+}
+
 // Should handle mainly state update, reset and value fallbacks
 function reducerHandler(
    state: carouselState,
@@ -31,14 +54,14 @@ function reducerHandler(
          result = {
             ...state,
             ...action.data,
-            trackState: trackStateTitle["Stopped"],
+            // trackState: trackStateTitle["Stopped"],
          };
          break;
       case "Update":
          result = { ...state, ...action.data };
          break;
       case actionTypeStates["Focus"]:
-         result = { ...state, trackState: trackStateTitle["Focused"] };
+         result = { ...state, trackState: trackStateTitle["Focused"], focus: state.focus + 1 };
          break;
       case actionTypeStates["Grab"]:
          result = {
@@ -68,16 +91,26 @@ function reducerHandler(
             activeSlide: action.data?.activeSlide < 0 ? 0 : action.data?.activeSlide ?? state.activeSlide,
          };
          break;
+      case "shift":
+         const activeSlide = rolloverActiveSlide(state, action.data?.shift, state.countOfSlides)
+         result = {
+            ...state,
+            trackState: trackStateTitle["Shift"],
+            activeSlide: activeSlide,
+            dragDistance: action.data.shift,
+         }
+         break;
       case "animate":
          result = { ...state, carouselResetTimer: action.data };
          break;
       case "stopAnimation":
          result = {
             ...state,
-            trackState: trackStateTitle["Stopped"],
+            trackState: state.focus === 0 ? trackStateTitle["Stopped"] : trackStateTitle["Focused"],
             carouselResetTimer: null,
             dragDistance: 0,
             firstX: 0,
+            focus: state.focus--
          };
          break;
       default:
@@ -121,7 +154,7 @@ export default function Carousel({
    if (
       playAnimations &&
       carouselResetTimer === null &&
-      trackState === trackStateTitle["Playing"] &&
+      (trackState === trackStateTitle["Playing"] || trackState === trackStateTitle["Shift"]) &&
       carouselRef.current &&
       trackRef.current
    ) {
@@ -130,9 +163,9 @@ export default function Carousel({
       const margin = ((TRACK.children[1] as HTMLElement).offsetLeft - (TRACK.children[0] as HTMLElement).offsetLeft - (TRACK.children[1] as HTMLElement).clientWidth) / 2
       const threshold = Math.round(
          (dragDistance / (TRACK.children[1] as HTMLElement).offsetLeft) * -1
-      );
+      )
       // get how far the user dragged from new position
-      const math =
+      let math =
          negativeOffsetOrigin +
          (threshold === 0
             ? dragDistance
@@ -141,6 +174,9 @@ export default function Carousel({
                : -(TRACK.children[threshold * -1] as HTMLElement).offsetLeft + dragDistance + margin);
       // console.log("playing animation", negativeOffsetOrigin, threshold, dragDistance, math)
 
+      if (trackStateTitle[trackState] === "Shift") {
+         math = negativeOffsetOrigin + (dragDistance > 0 ? TRACK.children[activeSlide].clientWidth + margin : -TRACK.children[activeSlide].clientWidth + margin)
+      }
       new Promise((resolve) => {
          TRACK.style.setProperty("transition", `all 0ms`);
          TRACK.style.setProperty("translate", `${math}px`);
@@ -301,6 +337,7 @@ export default function Carousel({
 
    useEffect(() => {
       if (
+         negativeOffsetOrigin === 0 &&
          trackState === trackStateTitle["Initialize"] &&
          trackRef.current !== null
       ) {
@@ -343,10 +380,38 @@ export default function Carousel({
          document.removeEventListener("mouseup", removableReleaseCB);
          document.removeEventListener("touchend", removableReleaseCB);
       };
-   }, [removableMoveCB, removableReleaseCB]);
+   }, [removableMoveCB, removableReleaseCB, trackState]);
 
    return (
       <>
+         {/*
+         * Dev Info
+         */}
+         <div id="dev-info">
+            {playAnimations === true && (
+               <h2>State: {trackStateTitle[state.trackState]}</h2>
+            )}
+            <p>Active Slide: {state.activeSlide} </p>
+            <h2>
+               Drag Distance:
+               {dragDistance < deadZone * -1 ? "(<) " : ""}
+               {` ${dragDistance} `}
+               {dragDistance > deadZone ? " (>) " : ""}
+
+               {trackRef.current !== null &&
+                  `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth
+                  } ` +
+                  `| DragThresholdPercent: ${Math.round(
+                     (dragDistance / trackRef.current.children[0].clientWidth) *
+                     -1 *
+                     100
+                  ) / 100
+                  }`}
+            </h2>
+         </div>
+         {/*
+         * End Dev Info
+         */}
          <div
             className="carousel"
             aria-label={
@@ -366,6 +431,7 @@ export default function Carousel({
             onMouseEnter={(e: Evt) => setEventRef(e, focusCarousel)}
             onTouchStart={(e: Evt) => setEventRef(e, focusCarousel)}
             onFocusCapture={(e: any) => setEventRef(e, focusCarousel)}
+            onMouseMove={(e: Evt) => setEventRef(e, focusCarousel)}
             role="region"
             ref={carouselRef}
          >
@@ -375,35 +441,6 @@ export default function Carousel({
                id="beforeCarousel"
                href="#beyondCarousel"
             ></a>
-
-            {/*
-         * Dev Info
-         */}
-            <div id="dev-info">
-               {playAnimations === true && (
-                  <h2>State: {trackStateTitle[state.trackState]}</h2>
-               )}
-               <p>Active Slide: {state.activeSlide} </p>
-               <h2>
-                  Drag Distance:
-                  {dragDistance < deadZone * -1 ? "(<) " : ""}
-                  {` ${dragDistance} `}
-                  {dragDistance > deadZone ? " (>) " : ""}
-
-                  {trackRef.current !== null &&
-                     `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth
-                     } ` +
-                     `| DragThresholdPercent: ${Math.round(
-                        (dragDistance / trackRef.current.children[0].clientWidth) *
-                        -1 *
-                        100
-                     ) / 100
-                     }`}
-               </h2>
-            </div>
-            {/*
-         * End Dev Info
-         */}
 
             <CarouselContext.Provider value={{ state: state, dispatch: dispatch }}>
                <CarouselControls />
