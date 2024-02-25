@@ -1,57 +1,57 @@
 .carousel {
-    --transition-duration: 0ms;
-    cursor: grab;
-    width: 100%;
-    overflow: hidden;
+  --transition-duration: 0ms;
+  cursor: grab;
+  width: 100%;
+  overflow: hidden;
 
-    * {
-        user-select: none;
+  * {
+    user-select: none;
+  }
+
+  .track {
+    display: flex;
+    margin: 0 -16px;
+    will-change: translate;
+    transform: translateZ(0);
+
+    > .item {
+      align-items: stretch;
+      display: flex;
+      flex-basis: 25%;
+      flex-shrink: 0;
+      justify-content: center;
+      margin-left: 16px;
+      margin-right: 16px;
+      width: clamp(250px, 90%, 75vw);
+
+      // &:hover,
+      &.active {
+        flex-basis: var(--active-width);
+        width: inherit;
+      }
+
+      * {
+        pointer-events: none;
+      }
+
+      &:focus-within {
+        @include a11y-focus;
+      }
     }
+  }
 
-    .track {
-        display: flex;
-        margin: 0 -16px;
-        will-change: translate;
-        transform: translateZ(0);
+  // @media (prefers-reduced-motion: no-preference) {
+  //     .track {
+  //         > * {
+  //             transition: all 0.3s, flex-shrink 0.3s 0.3s;
+  //         }
+  //     }
+  // }
+}
 
-        > .item {
-            align-items: stretch;
-            display: flex;
-            flex-basis: 25%;
-            flex-shrink: 0;
-            justify-content: center;
-            margin-left: 16px;
-            margin-right: 16px;
-            width: clamp(250px, 90%, 75vw);
-            
-            // &:hover,
-            &.active {
-                flex-basis: var(--active-width);
-                width: inherit;
-            }
-
-            * {
-                pointer-events: none;
-            }
-
-            &:focus-within {
-                @include a11y-focus;
-            }
-        }
-    }
-
-    #dev-info {
-        @include sunset-gradient;
-        color: black;
-        padding: 2rem;
-        margin: 1.15rem;
-    }
-
-    // @media (prefers-reduced-motion: no-preference) {
-    //     .track {
-    //         > * {
-    //             transition: all 0.3s, flex-shrink 0.3s 0.3s;
-    //         }
-    //     }
-    // }
+#dev-info {
+  @include sunset-gradient;
+  color: black;
+  padding: 2rem;
+  margin: 1.15rem;
 }
