@@ -8,7 +8,10 @@ index.fig
 package-lock.json
 devserver.js
 ignore
-
 src/media
+bex
+node_modules
+ssl
+figma-widget
 dist/assets/fonts
-dist/assets/media
+ServerSetup.md
