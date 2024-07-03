@@ -22627,8 +22627,9 @@ var trackStateTitle;
   trackStateTitle2[trackStateTitle2["Stopped"] = 1] = "Stopped";
   trackStateTitle2[trackStateTitle2["Playing"] = 2] = "Playing";
   trackStateTitle2[trackStateTitle2["Moving"] = 3] = "Moving";
-  trackStateTitle2[trackStateTitle2["Grabbed"] = 4] = "Grabbed";
-  trackStateTitle2[trackStateTitle2["Focused"] = 5] = "Focused";
+  trackStateTitle2[trackStateTitle2["Shift"] = 4] = "Shift";
+  trackStateTitle2[trackStateTitle2["Grabbed"] = 5] = "Grabbed";
+  trackStateTitle2[trackStateTitle2["Focused"] = 6] = "Focused";
 })(trackStateTitle || (trackStateTitle = {}));
 var actionTypeStates;
 (function(actionTypeStates2) {
@@ -22646,6 +22647,8 @@ var CarouselDefaults = {
   deadZone: 20,
   dragDistance: 0,
   firstX: 0,
+  focus: 0,
+  intervalDuration: 3000,
   negativeOffsetOrigin: 0,
   playAnimations: false,
   slidesToClone: 4,
@@ -22734,10 +22737,43 @@ var Projects = [
 // ts/components/carousel/controls.tsx
 var import_react2 = __toESM(require_react(), 1);
 function CarouselControls() {
+  const [intervalEnabled, setIntervalEnabled] = import_react2.useState(false);
+  const [intervalId, setIntervalId] = import_react2.useState(null);
   const { state, dispatch } = import_react2.useContext(CarouselContext);
   const {
-    playAnimations
+    playAnimations,
+    trackState,
+    intervalDuration,
+    focus
   } = state;
+  function shiftTrack(dragThresholdVector) {
+    dispatch({ actionType: "shift", data: { shift: dragThresholdVector } });
+  }
+  function handleIntervalStatus() {
+    setIntervalEnabled(!intervalEnabled);
+  }
+  let tempId = null;
+  import_react2.useEffect(() => {
+    console.log(trackStateTitle[trackState]);
+    if (trackStateTitle[trackState] !== "Focused" && intervalId === null && (intervalEnabled || trackStateTitle[trackState] === "Initialize")) {
+      tempId = setInterval(() => {
+        dispatch({ actionType: "shift", data: { trackState: trackStateTitle["Playing"], shift: 1 } });
+      }, intervalDuration);
+      setIntervalId(tempId);
+    }
+    if (trackStateTitle[trackState] === "Initialize") {
+      dispatch({ actionType: "Update", data: { trackState: trackStateTitle["Stopped"] } });
+    }
+    return () => {
+      console.log(intervalEnabled, intervalId);
+      if ((tempId !== null || intervalId !== null) && (!intervalEnabled || trackStateTitle[trackState] === "Focused")) {
+        console.log("remove", tempId, intervalId);
+        tempId && clearInterval(tempId);
+        intervalId && clearInterval(intervalId);
+        setIntervalId(null);
+      }
+    };
+  }, [focus]);
   return import_react2.default.createElement(import_react2.default.Fragment, null, import_react2.default.createElement("div", {
     className: "carousel-state-controls"
   }, import_react2.default.createElement("button", {
@@ -22745,7 +22781,16 @@ function CarouselControls() {
     onClick: () => dispatch({ actionType: "Update", data: { playAnimations: !playAnimations } })
   }, "Toggle Animations ", playAnimations === true ? "Off" : "On")), import_react2.default.createElement("div", {
     className: "track-controls"
-  }));
+  }, import_react2.default.createElement("button", {
+    className: "prev",
+    onClick: () => shiftTrack(-1)
+  }, "Previous"), import_react2.default.createElement("button", {
+    className: "next",
+    onClick: () => shiftTrack(1)
+  }, "Next"), import_react2.default.createElement("button", {
+    className: "pause",
+    onClick: handleIntervalStatus
+  }, intervalId !== null ? "Pause" : "Play", " Carousel")));
 }
 
 // ts/components/carousel/track.tsx
@@ -22815,6 +22860,15 @@ function CarouselTrack(props) {
 }
 
 // ts/components/carousel/carousel.tsx
+var rolloverActiveSlide = function(state, dragThresholdVector, maxVal) {
+  let rollover = null;
+  if (state.activeSlide + dragThresholdVector < 0) {
+    rollover = state.activeSlide + dragThresholdVector + maxVal;
+  } else if (state.activeSlide + dragThresholdVector > maxVal - 1) {
+    rollover = (state.activeSlide + dragThresholdVector) % maxVal;
+  }
+  return rollover ?? state.activeSlide + dragThresholdVector;
+};
 var reducerHandler = function(state, action) {
   const { actionType } = action;
   let result;
@@ -22822,15 +22876,14 @@ var reducerHandler = function(state, action) {
     case "Initialize":
       result = {
         ...state,
-        ...action.data,
-        trackState: trackStateTitle["Stopped"]
+        ...action.data
       };
       break;
     case "Update":
       result = { ...state, ...action.data };
       break;
     case actionTypeStates["Focus"]:
-      result = { ...state, trackState: trackStateTitle["Focused"] };
+      result = { ...state, trackState: trackStateTitle["Focused"], focus: state.focus + 1 };
       break;
     case actionTypeStates["Grab"]:
       result = {
@@ -22856,16 +22909,26 @@ var reducerHandler = function(state, action) {
         activeSlide: action.data?.activeSlide < 0 ? 0 : action.data?.activeSlide ?? state.activeSlide
       };
       break;
+    case "shift":
+      const activeSlide = rolloverActiveSlide(state, action.data?.shift, state.countOfSlides);
+      result = {
+        ...state,
+        trackState: trackStateTitle["Shift"],
+        activeSlide,
+        dragDistance: action.data.shift
+      };
+      break;
     case "animate":
       result = { ...state, carouselResetTimer: action.data };
       break;
     case "stopAnimation":
       result = {
         ...state,
-        trackState: trackStateTitle["Stopped"],
+        trackState: state.focus === 0 ? trackStateTitle["Stopped"] : trackStateTitle["Focused"],
         carouselResetTimer: null,
         dragDistance: 0,
-        firstX: 0
+        firstX: 0,
+        focus: state.focus--
       };
       break;
     default:
@@ -22899,12 +22962,15 @@ function Carousel({
   const removableReleaseCB = () => {
     release();
   };
-  if (playAnimations && carouselResetTimer === null && trackState === trackStateTitle["Playing"] && carouselRef.current && trackRef.current) {
+  if (playAnimations && carouselResetTimer === null && (trackState === trackStateTitle["Playing"] || trackState === trackStateTitle["Shift"]) && carouselRef.current && trackRef.current) {
     const CAROUSEL = carouselRef.current;
     const TRACK = trackRef.current;
     const margin = (TRACK.children[1].offsetLeft - TRACK.children[0].offsetLeft - TRACK.children[1].clientWidth) / 2;
     const threshold = Math.round(dragDistance / TRACK.children[1].offsetLeft * -1);
-    const math = negativeOffsetOrigin + (threshold === 0 ? dragDistance : threshold > 0 ? TRACK.children[threshold].offsetLeft + dragDistance + margin : -TRACK.children[threshold * -1].offsetLeft + dragDistance + margin);
+    let math = negativeOffsetOrigin + (threshold === 0 ? dragDistance : threshold > 0 ? TRACK.children[threshold].offsetLeft + dragDistance + margin : -TRACK.children[threshold * -1].offsetLeft + dragDistance + margin);
+    if (trackStateTitle[trackState] === "Shift") {
+      math = negativeOffsetOrigin + (dragDistance > 0 ? TRACK.children[activeSlide].clientWidth + margin : -TRACK.children[activeSlide].clientWidth + margin);
+    }
     new Promise((resolve) => {
       TRACK.style.setProperty("transition", `all 0ms`);
       TRACK.style.setProperty("translate", `${math}px`);
@@ -22997,7 +23063,7 @@ function Carousel({
     }
   }
   import_react4.useEffect(() => {
-    if (trackState === trackStateTitle["Initialize"] && trackRef.current !== null) {
+    if (negativeOffsetOrigin === 0 && trackState === trackStateTitle["Initialize"] && trackRef.current !== null) {
       const playAnimations2 = window.matchMedia("(prefers-reduced-motion: reduce)").matches === true ? false : true;
       if (playAnimations2 && carouselRef.current) {
         carouselRef.current.style.setProperty("--transition-duration", "300ms");
@@ -23026,8 +23092,10 @@ function Carousel({
       document.removeEventListener("mouseup", removableReleaseCB);
       document.removeEventListener("touchend", removableReleaseCB);
     };
-  }, [removableMoveCB, removableReleaseCB]);
+  }, [removableMoveCB, removableReleaseCB, trackState]);
   return import_react4.default.createElement(import_react4.default.Fragment, null, import_react4.default.createElement("div", {
+    id: "dev-info"
+  }, playAnimations === true && import_react4.default.createElement("h2", null, "State: ", trackStateTitle[state.trackState]), import_react4.default.createElement("p", null, "Active Slide: ", state.activeSlide, " "), import_react4.default.createElement("h2", null, "Drag Distance:", dragDistance < deadZone * -1 ? "(<) " : "", ` ${dragDistance} `, dragDistance > deadZone ? " (>) " : "", trackRef.current !== null && `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth} ` + `| DragThresholdPercent: ${Math.round(dragDistance / trackRef.current.children[0].clientWidth * -1 * 100) / 100}`)), import_react4.default.createElement("div", {
     className: "carousel",
     "aria-label": autoplay === true ? "Projects Carousel with autoplay" : "Projects Carousel",
     onMouseUp: (e) => {
@@ -23042,6 +23110,7 @@ function Carousel({
     onMouseEnter: (e) => setEventRef(e, focusCarousel),
     onTouchStart: (e) => setEventRef(e, focusCarousel),
     onFocusCapture: (e) => setEventRef(e, focusCarousel),
+    onMouseMove: (e) => setEventRef(e, focusCarousel),
     role: "region",
     ref: carouselRef
   }, import_react4.default.createElement("a", {
@@ -23049,9 +23118,7 @@ function Carousel({
     className: "visually-hidden",
     id: "beforeCarousel",
     href: "#beyondCarousel"
-  }), import_react4.default.createElement("div", {
-    id: "dev-info"
-  }, playAnimations === true && import_react4.default.createElement("h2", null, "State: ", trackStateTitle[state.trackState]), import_react4.default.createElement("p", null, "Active Slide: ", state.activeSlide, " "), import_react4.default.createElement("h2", null, "Drag Distance:", dragDistance < deadZone * -1 ? "(<) " : "", ` ${dragDistance} `, dragDistance > deadZone ? " (>) " : "", trackRef.current !== null && `| DragThresholdRaw: ${dragDistance % trackRef.current.children[0].clientWidth} ` + `| DragThresholdPercent: ${Math.round(dragDistance / trackRef.current.children[0].clientWidth * -1 * 100) / 100}`)), import_react4.default.createElement(CarouselContext.Provider, {
+  }), import_react4.default.createElement(CarouselContext.Provider, {
     value: { state, dispatch }
   }, import_react4.default.createElement(CarouselControls, null), import_react4.default.createElement(CarouselTrack, {
     trackRef,
