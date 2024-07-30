@@ -47,6 +47,11 @@
   //         }
   //     }
   // }
+
+  .project {
+    max-height: min(50vh, 450px);
+    width: 100%;
+  }
 }
 
 #dev-info {

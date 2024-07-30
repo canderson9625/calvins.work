@@ -3,10 +3,10 @@ import React, {
     useState,
 } from "react";
 
-enum projectStateEnum {
-    Closed,
-    Open
-}
+const projectStateEnum = {
+    Closed: 0,
+    Open: 1
+} as const
 
 export default function Project({
     srcSlug,
@@ -24,7 +24,7 @@ export default function Project({
     btn_href: string,
 }) {
 
-    const [projectState, setProjectState] = useState(projectStateEnum['Closed']);
+    const [projectState, setProjectState] = useState<number>(projectStateEnum['Closed']);
     let classes = projectState === projectStateEnum['Closed'] ? '' : 'expanded';
     classes += ' project';
 
@@ -38,7 +38,8 @@ export default function Project({
 
     return (<>
         <article className={classes} 
-            onClick={() => projectExpand()} 
+            onClick={() => projectExpand()}
+            onMouseEnter={() => projectExpand()}
             onMouseLeave={() => projectRevert()}
             // onMouseLeave={(e: Evt) => projectRevert(e)}
             aria-expanded={projectState === projectStateEnum['Open'] ? true : false}

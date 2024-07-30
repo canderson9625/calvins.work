@@ -9,12 +9,9 @@
 
 ## Setup
 ```
-yarn install && \
-
-// devserver is not minifed 
-// to preserve errors 
-yarn (devserver|server) && \
-yarn (dev|start)
+PNPM:
+one terminal: pnpm start // start vite
+another terminal: pnpm run devjs // esbuild with watch
 ```
 
 ## Scripts
@@ -28,6 +25,9 @@ Utility scripts are available as cli arguments
    - `build` runs both `css` & `js`
  - `dev` is available as `--dev`
  - `--ssr` is available for enabling server side rendering
+
+## TODO: SSR
+The useRef call is undefined and need to render to string for SSG either way
 
 ## TODO: API
 The routes would allow for starting the processes defined in the `BUILD` object

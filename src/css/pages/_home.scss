@@ -74,12 +74,12 @@ section {
 
     .backdrop_filter {
         background: black;
-        height: 100%;
-        left: 0;
+        height: calc(100% - (var(--section_padding) * 2));
+        left: calc(var(--section_padding) * 1.5);
         mix-blend-mode: saturation;
         position: absolute;
-        top: 0;
-        width: 100%;
+        top: calc(var(--section_padding) * 1.5);
+        width: calc(100% - (var(--section_padding) * 2));
         z-index: 0;
     }
 
@@ -88,9 +88,9 @@ section {
         content: '';
         filter: blur(10px);
         height: calc(100% - (var(--section_padding) * 2));
-        left: -12px;
+        left: var(--section_padding);
         position: absolute;
-        top: -12px;
+        top: var(--section_padding);
         width: calc(100% - (var(--section_padding) * 2));
         z-index: 1;
     }
@@ -117,6 +117,10 @@ section {
     //     clip-path: polygon(0 0, 100% 100%, 0 100%);
     //     transform: rotate(45deg);
     // }
+
+    img {
+        transform: translateY(-1%);
+    }
 }
 
 .header {
