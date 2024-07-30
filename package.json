@@ -7,12 +7,13 @@
   "scripts": {
     "start": "node server.js --ssr",
     "build": "npm run css & npm run js",
-    "#dev": "node devserver.js --ssr",
+    "dev": "node devserver.js --ssr",
     "sharp": "node server.js --sharp",
     "css": "sass src/css/style.scss:dist/assets/css/style.css && postcss dist/assets/css/style.css -r",
     "js": "esbuild src/client.tsx --bundle --minify --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
     "devjs": "esbuild src/client.tsx --bundle --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
     "server": "esbuild src/server.tsx --bundle --minify --outfile=server.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
+    "devserver": "esbuild src/server.tsx --bundle --outfile=devserver.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
     "#build:dev": "node src/build_devserver.js",
     "test": "vitest -r ./src/ --bail 3 --environment=jsdom",
     "dev:kill": "kill -9 $(lsof -ti:80)"
