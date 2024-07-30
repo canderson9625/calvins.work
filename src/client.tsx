@@ -1,5 +1,7 @@
 import React from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './ts/main';
 
-hydrateRoot(document.getElementById('ssr-outlet')!, <App />);
+// hydrateRoot(document.getElementById('ssr-outlet')!, <App />);
+const root = createRoot(document.getElementById('ssr-outlet')!)
+root.render(<App />)
