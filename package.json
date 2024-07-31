@@ -13,6 +13,8 @@
     "js": "esbuild src/client.tsx --bundle --minify --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
     "devjs": "esbuild src/client.tsx --bundle --sourcemap --allow-overwrite --outfile=dist/assets/js/client.js --log-level=warning --format=esm",
     "server": "esbuild src/server.tsx --bundle --minify --outfile=server.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
+    "devserver": "esbuild src/server.tsx --bundle --outfile=devserver.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
+    "testtsx": "esbuild src/ts/testserver.tsx --bundle --outfile=src/ts/testserver.js --allow-overwrite --log-level=warning --platform=node --format=esm --packages=external",
     "#build:dev": "node src/build_devserver.js",
     "test": "vitest -r ./src/ --bail 3 --environment=jsdom",
     "dev:kill": "kill -9 $(lsof -ti:80)"
