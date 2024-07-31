@@ -1,4 +1,4 @@
-// src/ts/testserver.tsx
+// src/ts/main.tsx
 import React6 from "react";
 
 // src/ts/components/carousel/carousel.tsx
@@ -43,6 +43,116 @@ var CarouselContext = createContext(
     }
   }
 );
+var Projects = [
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-seed",
+      srcSlug: "seed",
+      alt: "The Seed Website's landing page for its blog.",
+      title: "Seed",
+      subtitle: "Wordpress",
+      btn_href: "https://seed.com/cultured"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I helped with the responsiveness of the landing page and I built the new blog post template utilizing custom Gutenberg Blocks for a hassle-free backend content management experience.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-brmc",
+      srcSlug: "brmc",
+      alt: "The BRMC Website's home page.",
+      title: "BRMC",
+      subtitle: "Wordpress",
+      btn_href: "https://blueridgemountainclub.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I built this website with the collaboration of two other developers. I integrated Hubspot, a 3rd party CRM, into the theme for this code so that we could build custom forms to capture leads but continue to utilize Hubspot's workflows for automating the life of the lead.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-organic_olivia",
+      srcSlug: "organicolivia",
+      alt: "The Shopify Store for Organic Olivia, a modern approach to traditional herbal medicine.",
+      title: "Organic Olivia",
+      subtitle: "Shopify",
+      btn_href: "https://organicolivia.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I integrated Loyalty Lion, a Shopify Plus loyalty program into this shopify theme as well as wordpress to handle the blog. This website takes full advantage of Shopify Plus to further enhance and customize the User Experience.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-insignis_partners",
+      srcSlug: "insignispartners",
+      alt: "The insignis partners website. An Investment and Real Estate Development firm.",
+      title: "Insignis Partners",
+      subtitle: "Wordpress",
+      btn_href: "https://insignispartners.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I enjoyed creating the animations and interactivity on the portfolio page. We used advanced custom fields to give the client the ability to update their staff.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-davis_floyd",
+      srcSlug: "davisfloyd",
+      alt: "Davis Floyd Civil Construction.",
+      title: "Davis Floyd",
+      subtitle: "Wordpress",
+      btn_href: "https://www.davisfloyd.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I created the carousel animation on the Markets page and worked on the timeline on the about.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-kroeger_marine",
+      srcSlug: "kroegermarine",
+      alt: "Kroeger Marine Docks.",
+      title: "Kroeger Marine",
+      subtitle: "Wordpress",
+      btn_href: "https://www.kroegermarine.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-vive_psych",
+      srcSlug: "vivepsych",
+      alt: "Vive Psyche located in Greenville, SC.",
+      title: "Vive Psych",
+      subtitle: "Wordpress",
+      btn_href: "https://vivepsych.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I created the filter for the recycle your docks program. I helped make the custom cursor responsive when it used to lag and repaint the cursor every 300ms. I used Stripo to build out email campaigns in Mailchimp.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-core_transformers",
+      srcSlug: "coretransformers",
+      alt: "The Core Transformers Wordpress site.",
+      title: "Core Transformers",
+      subtitle: "Wordpress & BigCommerce",
+      btn_href: "https://coretransformers.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I was the sole developer for this project. I also gave their bigcommerce store a css update to match the wordpress site's brand.")
+  ),
+  /* @__PURE__ */ React.createElement(
+    Project,
+    {
+      key: "proj-parkside_obgyn",
+      srcSlug: "parksideob-gyn",
+      alt: "Parkside OB-GYN. Modern Women, Modern Care.",
+      title: "Parkside OB-GYN",
+      subtitle: "Wordpress",
+      btn_href: "https://parksideob-gyn.com"
+    },
+    /* @__PURE__ */ React.createElement("p", null, "I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.")
+  )
+];
 
 // src/ts/components/carousel/controls.tsx
 import React2, { useContext, useEffect, useState } from "react";
@@ -440,7 +550,66 @@ function Carousel({
 import React5, {
   useState as useState4
 } from "react";
+var projectStateEnum = {
+  Closed: 0,
+  Open: 1
+};
+function Project({
+  srcSlug,
+  alt,
+  title,
+  subtitle,
+  children,
+  btn_href
+}) {
+  const [projectState, setProjectState] = useState4(projectStateEnum["Closed"]);
+  let classes = projectState === projectStateEnum["Closed"] ? "" : "expanded";
+  classes += " project";
+  function projectExpand() {
+    setProjectState(projectStateEnum["Open"]);
+  }
+  function projectRevert() {
+    setProjectState(projectStateEnum["Closed"]);
+  }
+  return /* @__PURE__ */ React5.createElement(React5.Fragment, null, /* @__PURE__ */ React5.createElement(
+    "article",
+    {
+      className: classes,
+      onClick: () => projectExpand(),
+      onMouseEnter: () => projectExpand(),
+      onMouseLeave: () => projectRevert(),
+      "aria-expanded": projectState === projectStateEnum["Open"] ? true : false
+    },
+    /* @__PURE__ */ React5.createElement("picture", null, /* @__PURE__ */ React5.createElement("source", { srcSet: `assets/media/${srcSlug}.png.webp`, type: "image/webp" }), /* @__PURE__ */ React5.createElement("source", { srcSet: `assets/media/${srcSlug}.png`, type: "image/png" }), /* @__PURE__ */ React5.createElement("img", { src: `assets/media/${srcSlug}.png.webp`, alt: alt ?? "" })),
+    /* @__PURE__ */ React5.createElement("div", { className: "content" }, /* @__PURE__ */ React5.createElement("h3", null, title, " ", /* @__PURE__ */ React5.createElement("span", null, subtitle)), children, /* @__PURE__ */ React5.createElement("a", { className: "btn", href: btn_href, target: "_blank" }, "Visit ", title))
+  ));
+}
+
+// src/ts/hooks/homepage/useScrollBackground.tsx
+import { useEffect as useEffect3 } from "react";
+function useScrollBackground() {
+  useEffect3(() => {
+    if (window) {
+      const htmlHeight = document.querySelector("html")?.offsetHeight;
+      const imgref = document.querySelector(".shapes img");
+      const handleScroll = () => {
+        const normalTotalHeight = (htmlHeight ?? 0) - window.innerHeight;
+        const scrolledNormal = window.scrollY / normalTotalHeight;
+        imgref.style.transform = `translateY(-${scrolledNormal * 10 + 1}%)`;
+      };
+      window.addEventListener("scroll", handleScroll);
+    }
+  }, []);
+  return;
+}
+
+// src/ts/main.tsx
+function App() {
+  useScrollBackground();
+  return /* @__PURE__ */ React6.createElement(React6.Fragment, null, /* @__PURE__ */ React6.createElement(React6.StrictMode, null, /* @__PURE__ */ React6.createElement(Carousel, null, Projects)));
+}
 
 // src/ts/testserver.tsx
+import React7 from "react";
 import { renderToString } from "react-dom/server";
-console.log(renderToString(/* @__PURE__ */ React6.createElement(Carousel, null)));
+console.log(renderToString(/* @__PURE__ */ React7.createElement(App, null)));

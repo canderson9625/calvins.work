@@ -28,7 +28,10 @@ esbuild.build({
                 build.onResolve({ filter: new RegExp(/^@/) }, (args) => {
                     // console.log(args);
                     // all imports with the @ symbol should resolve
-                    const isIndex = args.path.includes('/') ? '.tsx' : '/index.tsx';
+                    let isIndex = args.path.includes('/') ? '.tsx' : '/index.tsx';
+                    if (args.path.includes('main')) {
+                        isIndex = '.tsx'
+                    }
                     const filePath = path.join(__dirname, args.path.slice(1) + isIndex);
                     // console.log(rawDirname, __dirname, isIndex, filePath)
                     return { path: filePath }

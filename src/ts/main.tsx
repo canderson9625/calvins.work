@@ -12,15 +12,15 @@ export default function App() {
         <React.StrictMode>
             {/* overview */}
             {/* Circle graph of top 3 languages used, generated from the tags on the projects */}
-            {/* <Carousel>
+            <Carousel>
                 {
                     // a subset of featured projects
                 }
                 { Projects }
-            </Carousel> */}
+            </Carousel>
 
             {/* filter */}
-                { Projects }
+                {/* { Projects } */}
             {/*  */}
         </React.StrictMode>
     </>)
