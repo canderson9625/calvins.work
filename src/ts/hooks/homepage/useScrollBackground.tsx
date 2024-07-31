@@ -22,6 +22,7 @@ export default function useScrollBackground() {
                 // (imgref as HTMLImageElement).style.transform = `translateY(-${scrolledGoldenExponential * 10 + 1}%)`
                 // (imgref as HTMLImageElement).style.transform = `translateY(-${scrolledSilverExponential * 10 + 1}%)`
             }
+            handleScroll()
             window.addEventListener('scroll', handleScroll)
         }
     }, [])

@@ -30,7 +30,7 @@ export default function CarouselControls(
 
    let tempId: Timer | null = null;
    useEffect(() => {
-      console.log(trackStateTitle[trackState])
+      // console.log(trackStateTitle[trackState])
       if (trackStateTitle[trackState] !== "Focused" && intervalId === null && (intervalEnabled || trackStateTitle[trackState] === "Initialize")) {
          tempId = setInterval(() => {
             dispatch({ actionType: 'shift', data: { trackState: trackStateTitle["Playing"], shift: 1 } })
@@ -43,9 +43,9 @@ export default function CarouselControls(
       }
 
       return () => {
-         console.log(intervalEnabled, intervalId)
+         // console.log(intervalEnabled, intervalId)
          if ((tempId !== null || intervalId !== null) && (!intervalEnabled || trackStateTitle[trackState] === "Focused")) {
-            console.log('remove', tempId, intervalId)
+            // console.log('remove', tempId, intervalId)
             tempId && clearInterval(tempId)
             intervalId && clearInterval(intervalId)
             setIntervalId(null)

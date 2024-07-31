@@ -35,12 +35,14 @@ export default function CarouselTrack(props: trackProps) {
       carousel.style.cursor = 'grabbing';
    }
 
+   // console.log(children, [...children as Iterable<React.ReactNode>], Object.entries(children ?? {}), Array.from(children as Iterable<React.ReactNode> ?? ""))
+
    return (<>
       <div className="track"
          onMouseDown={(e: Evt) => setEventRef(e, userGrabbedCarousel)} onTouchStart={(e: Evt) => setEventRef(e, userGrabbedCarousel)}
          ref={trackRef}
       >
-         {/* {children && children as Iterable<ReactNode>).map((val, idx, arr) => {
+         {[...children as Iterable<React.ReactNode>].map((val, idx, arr) => {
             // on first render only clones of last 4 items for scrolling backward, we can move or lazy load the rest
             if (idx < countOfChildren - slidesToClone) return;
 
@@ -60,7 +62,7 @@ export default function CarouselTrack(props: trackProps) {
                const permutation = (idx + activeSlide) % countOfChildren;
                return <div className={'item'} aria-current={active} key={permutation + 'item'} data-index={permutation}>{arr[permutation]}</div>;
             }
-         })} */}
+         })}
       </div>
    </>)
 }
