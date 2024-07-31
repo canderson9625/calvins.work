@@ -8,3 +8,12 @@ research react 19 and server components
 server.tsx will build for client and can render to string while importing from the tsx
 
 vite middle ware will utilize the built files for serving
+
+client side rendering
+current
+
+static site generation
+build my file and the server uses the latest built file
+
+server side rendering
+server components
