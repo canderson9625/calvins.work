@@ -3,19 +3,19 @@ import React, { FocusEventHandler, MouseEvent, TouchEvent, createContext } from 
 import { Project } from '@components';
 
 // custom event type for the carousel to use
-type Evt = {
+export type Evt = {
    target?: {
       clientX: number, // for cursor x position
       closest: Element // for finding the closest parent
    } & Element;
 } & MouseEvent<any> & TouchEvent<any> & MouseEvent & FocusEventHandler<any> & EventTarget & HTMLDivElement;
 
-type carouselAction = {
-   actionType: string | actionTypeStates,
+export type carouselAction = {
+   actionType: string | typeof actionTypeStates[keyof typeof actionTypeStates],
    data?: Evt | any
 };
 
-type carouselState = {
+export type carouselState = {
    activeSlide: number;
    animationDuration?: number;
    autoplay?: boolean;
@@ -24,34 +24,40 @@ type carouselState = {
    dragDistance: number;
    deadZone: number;
    firstX: number; // the first client x value when user starts dragging
-   focus: number;
    intervalDuration?: number
    playAnimations: boolean;
    negativeOffsetOrigin: number; // translate the track by slidesToClone
    slidesToClone: number;
-   trackState: trackStateTitle; // the current state of the track
+   trackState: typeof trackStateTitle[keyof typeof trackStateTitle]; // the current state of the track
 }
 
-enum trackStateTitle {
-   Initialize,
-   Stopped, // neutral
-   Playing, // auto scroll
-   Moving, // mid transition
-   Shift, // programmatically moved
-   Grabbed, // start listening to x movement from input
-   Focused, // a11y keyboard focus
-}
+export const trackStateTitle = {
+   0: "Initialize",
+   1: "Stopped", // neutral
+   2: "Playing", // auto scroll
+   3: "Moving", // mid transition
+   4: "Shift", // programmatically moved
+   5: "Grabbed", // start listening to x movement from input
+   6: "Focused", // a11y keyboard focus
+   Initialize: 0,
+   Stopped: 1, // neutral
+   Playing: 2, // auto scroll
+   Moving: 3, // mid transition
+   Shift: 4, // programmatically moved
+   Grabbed: 5, // start listening to x movement from input
+   Focused: 6, // a11y keyboard focus
+} as const;
 
-enum actionTypeStates {
-   Focus,   // keyboard focus
-   Hovered, // cursor state
-   Grab,    // cursor state
-   Release, // cursor state
-   Move,    // cursor state
-};
+export const actionTypeStates = {
+   Focus: 0,   // keyboard focus
+   Hovered: 1, // cursor state
+   Grab: 2,    // cursor state
+   Release: 3, // cursor state
+   Move:4 ,    // cursor state
+} as const;
 
 // a11y first
-const CarouselDefaults: carouselState = {
+export const CarouselDefaults: carouselState = {
    activeSlide: 0,
    animationDuration: 300,
    carouselResetTimer: null,
@@ -59,7 +65,6 @@ const CarouselDefaults: carouselState = {
    deadZone: 20,
    dragDistance: 0,
    firstX: 0,
-   focus: 0,
    intervalDuration: 3000,
    negativeOffsetOrigin: 0,
    playAnimations: false,
@@ -67,7 +72,7 @@ const CarouselDefaults: carouselState = {
    trackState: trackStateTitle['Initialize'],
 }
 
-const CarouselContext = createContext(
+export const CarouselContext = createContext(
    {
       state: CarouselDefaults,
       dispatch: (() => { }) as React.Dispatch<carouselAction>
@@ -75,7 +80,7 @@ const CarouselContext = createContext(
 );
 
 // TODO: replace with graphql
-const Projects = [
+export const Projects = [
    <Project
       key={'proj-seed'}
       srcSlug='seed'
@@ -166,14 +171,3 @@ const Projects = [
       <p>I worked on the PHP page templates and css mobile, tablet, and desktop breakpoints for the whole site.</p>
    </Project>,
 ];
-
-export {
-   actionTypeStates,
-   carouselAction,
-   CarouselContext,
-   CarouselDefaults,
-   carouselState,
-   Evt,
-   Projects,
-   trackStateTitle
-};

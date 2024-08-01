@@ -44,14 +44,15 @@ function reducerHandler(
             result = {
                 ...state,
                 ...action.data,
-                // trackState: trackStateTitle["Stopped"],
+                trackState: trackStateTitle["Stopped"],
             };
             break;
         case "Update":
             result = { ...state, ...action.data };
             break;
         case actionTypeStates["Focus"]:
-            result = { ...state, trackState: trackStateTitle["Focused"], focus: state.focus + 1 };
+            result = { ...state, trackState: trackStateTitle["Focused"], 
+            };
             break;
         case actionTypeStates["Grab"]:
             result = {
@@ -77,7 +78,6 @@ function reducerHandler(
                 ...state,
                 trackState: trackStateTitle["Playing"],
                 firstX: 0,
-                // dragDistance: 0,
                 activeSlide: action.data?.activeSlide < 0 ? 0 : action.data?.activeSlide ?? state.activeSlide,
             };
             break;
@@ -96,11 +96,11 @@ function reducerHandler(
         case "stopAnimation":
             result = {
                 ...state,
-                trackState: state.focus === 0 ? trackStateTitle["Stopped"] : trackStateTitle["Focused"],
+                ...action.data,
+                trackState: trackStateTitle["Stopped"],
                 carouselResetTimer: null,
                 dragDistance: 0,
                 firstX: 0,
-                focus: state.focus--
             };
             break;
         default:
