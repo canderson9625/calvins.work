@@ -49,7 +49,7 @@
   // }
 
   .project {
-    max-height: min(50vh, 450px);
+    max-height: 250px;
     width: 100%;
   }
 }
@@ -58,5 +58,5 @@
   @include sunset-gradient;
   color: black;
   padding: 2rem;
-  margin: 1.15rem;
+  margin: 1.15rem 0;
 }
