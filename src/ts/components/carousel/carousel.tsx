@@ -1,6 +1,7 @@
 import React, {
    MutableRefObject,
    PropsWithChildren,
+   useCallback,
    useEffect,
    useRef,
    useState,
@@ -21,6 +22,7 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
 
    let countOfChildren: number = React.Children.count(children);
    const {
+      state,
       state: {
          activeSlide,
          animationDuration,
@@ -39,79 +41,13 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
    const trackRef = useRef<HTMLDivElement | null>(null);
    const eventRef = useRef<Evt | null>(null);
 
-   try {
-      // allow for animations if enabled
-      if (
-         playAnimations &&
-         carouselResetTimer === null &&
-         (trackState === trackStateTitle["Playing"] || trackState === trackStateTitle["Shift"]) &&
-         carouselRef.current &&
-         trackRef.current
-      ) {
-         const CAROUSEL = carouselRef.current;
-         const TRACK = trackRef.current;
-         const margin = ((TRACK.children[1] as HTMLElement).offsetLeft - (TRACK.children[0] as HTMLElement).offsetLeft - (TRACK.children[1] as HTMLElement).clientWidth) / 2
-         const threshold = Math.round(
-            (dragDistance / (TRACK.children[1] as HTMLElement).offsetLeft) * -1
-         )
-         // get how far the user dragged from new position
-         let math =
-            negativeOffsetOrigin +
-            (threshold === 0
-               ? dragDistance
-               : threshold > 0
-                  ? (TRACK.children[threshold] as HTMLElement).offsetLeft + dragDistance + margin
-                  : -(TRACK.children[threshold * -1] as HTMLElement).offsetLeft + dragDistance + margin);
-         // console.log("playing animation", negativeOffsetOrigin, threshold, dragDistance, math)
-   
-         if (trackStateTitle[trackState] === "Shift") {
-            math = negativeOffsetOrigin + (dragDistance > 0 ? TRACK.children[activeSlide].clientWidth + margin : -TRACK.children[activeSlide].clientWidth + margin)
-         }
-         new Promise((resolve) => {
-            TRACK.style.setProperty("transition", `all 0ms`);
-            TRACK.style.setProperty("translate", `${math}px`);
-            resolve(null);
-         }).then(() => {
-            TRACK.style.setProperty(
-               "transition",
-               `translate ${CAROUSEL.style.getPropertyValue("--transition-duration")}`
-            );
-            TRACK.style.translate = `${negativeOffsetOrigin}px`;
-         });
-         let timerID = setTimeout(() => {
-            dispatch({ actionType: "stopAnimation" });
-         }, animationDuration);
-         dispatch({ actionType: "animate", data: timerID });
-      }
-   } catch (e) {
-      console.error(e)
-   }
-
-   // reset carousel to origin
-   if (trackRef.current !== null && trackState === trackStateTitle["Stopped"]) {
-      const TRACK = trackRef.current;
-      TRACK.style.translate = `${negativeOffsetOrigin}px`;
-      if (playAnimations) {
-         TRACK.style.setProperty("transition", `all 0ms`);
-      }
-   }
-
-   const removableMoveCB = (x: any) => {
-      delegatedMoveHandler(x as Evt);
-   };
-   const removableReleaseCB = () => {
-      release();
-   };
-
-   function delegatedMoveHandler(e: Evt) {
-      // Track component sets the firstX value
-
-      if (
-         carouselResetTimer === null &&
-         trackState === trackStateTitle["Playing"]
-      ) {
-         return dispatch({ actionType: actionTypeStates["Focus"] });
-      }
+   const handleMove = useCallback((e: Evt) => {
+      // if (
+      //    carouselResetTimer === null &&
+      //    trackState === trackStateTitle["Playing"]
+      // ) {
+      //    return dispatch({ actionType: actionTypeStates["Focus"] });
+      // }
 
       if (
          trackState === trackStateTitle["Moving"] ||
@@ -119,13 +55,14 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
       ) {
          // user is dragging the carousel
          const track = trackRef.current as HTMLDivElement;
-         // const dragDistance = (e.clientX - firstX) + negativeOffsetOrigin;
+         // Track component sets the firstX value
          const dragDistance = e.clientX - firstX;
+         // const dragDistance = (e.clientX - firstX) + negativeOffsetOrigin;
 
          dispatch({
             actionType: actionTypeStates["Move"],
             data: {
-               dragDistance: dragDistance,
+               dragDistance,
             },
          });
 
@@ -138,7 +75,7 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
             track.style.translate = `${negativeOffsetOrigin}px`;
          }
       }
-   }
+   }, [trackState])
 
    const [isEventRefSet, setIsEventRefSet] = useState(false);
    function setEventRef(e: Evt, next: (...args: any) => any) {
@@ -156,13 +93,24 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
    }
 
    function focusCarousel(e: Evt) {
+      if (trackState === trackStateTitle["Shift"]) {
+         dispatch({ actionType: actionTypeStates["Release"] });
+      }
+
       if (
          eventRef.current?.type === "mouseup" ||
-         trackState === trackStateTitle["Playing"]
+         trackState === trackStateTitle["Playing"] ||
+         trackState === trackStateTitle["Moving"] ||
+         trackState === trackStateTitle["Grabbed"] 
+         // || trackState === trackStateTitle["Stopped"]
       ) {
          return;
       }
-      dispatch({ actionType: actionTypeStates["Focus"] });
+
+      if (trackState !== "Focused") {
+         dispatch({ actionType: actionTypeStates["Focus"] });
+      }
+      // coming back: a11y
       // const anchorTag = carouselRef.current?.querySelector('#beforeCarousel') as HTMLAnchorElement;
       // if ( e.type === 'focus' && anchorTag.dataset.focused === "true" ) {
       //     // anchorTag.focus();
@@ -174,27 +122,28 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
       }
    }
 
-   function release(e?: Evt) {
-      if (e?.type === "mouseleave") {
+   const release = useCallback((e?: Evt) => {
+      // if user leaves the carousel while dragging
+      if (e?.type === "mouseleave" && trackStateTitle[trackState] === "Moving") {
          return dispatch({ actionType: actionTypeStates["Release"] });
       }
 
-      if (eventRef.current?.type !== "mouseup" || typeof e === "undefined") {
+      // if release is called while carousel is stopped or playing
+      if (trackStateTitle[trackState] === "Stopped" || trackStateTitle[trackState] === "Playing" || eventRef.current?.type !== "mouseup" || typeof e === "undefined") {
          return;
       }
 
+      // reset cursor style
       if (carouselRef.current !== null && trackRef.current !== null) {
-         // reset cursor style
          carouselRef.current.style.cursor = "grab";
       }
 
       try {
-         // ref
+         // console.log(trackStateTitle[trackState], dragDistance, deadZone, (dragDistance > deadZone), dragDistance < deadZone * -1)
+         // user dragged and released
          if (
-            playAnimations &&
             (dragDistance > deadZone || dragDistance < deadZone * -1)
          ) {
-            // user dragged and released
             const dragThreshold = (
                threshold = (trackRef.current!.children[1] as HTMLElement).offsetLeft
             ) => {
@@ -225,8 +174,8 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
                return rollover ?? activeSlide + dragThresholdVector;
             };
    
-            dispatch({
-               actionType: actionTypeStates["Release"],
+            return dispatch({
+               actionType: playAnimations ? actionTypeStates["Release"] : "stopAnimation",
                data: {
                   activeSlide: dragThreshold(),
                },
@@ -238,7 +187,70 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
       } catch (e) {
          console.error(e)
       }
-   }
+   }, [playAnimations, trackState, dragDistance])
+
+   useEffect(() => {
+      try {
+         // console.log(playAnimations, carouselResetTimer, trackStateTitle[trackState])
+         // allow for animations if enabled
+         if (
+            playAnimations &&
+            carouselResetTimer === null &&
+            (trackState === trackStateTitle["Playing"] || trackState === trackStateTitle["Shift"]) &&
+            carouselRef.current &&
+            trackRef.current
+         ) {
+            const CAROUSEL = carouselRef.current;
+            const TRACK = trackRef.current;
+            const margin = ((TRACK.children[1] as HTMLElement).offsetLeft - (TRACK.children[0] as HTMLElement).offsetLeft - (TRACK.children[1] as HTMLElement).clientWidth) / 2
+            const threshold = Math.round(
+               (dragDistance / (TRACK.children[1] as HTMLElement).offsetLeft) * -1
+            )
+            // get how far the user dragged from new position
+            let math;
+            if (trackStateTitle["Shift"] === trackState) {
+               math = negativeOffsetOrigin + (dragDistance > 0 ? TRACK.children[activeSlide].clientWidth + margin : -TRACK.children[activeSlide].clientWidth + margin)
+            } else {
+               math = negativeOffsetOrigin +
+               (threshold === 0
+                  ? dragDistance
+                  : threshold > 0
+                     ? (TRACK.children[threshold] as HTMLElement).offsetLeft + (dragDistance + margin)
+                     : -(TRACK.children[threshold * -1] as HTMLElement).offsetLeft + (dragDistance + margin));
+            }
+            // console.log("playing animation", negativeOffsetOrigin, threshold, dragDistance, math)
+            new Promise((resolve) => {
+               TRACK.style.setProperty("transition", `all 0ms`);
+               TRACK.style.setProperty("translate", `${math}px`);
+               setTimeout(() => {
+                  resolve(null);
+               }, 50)
+            }).then(() => {
+               TRACK.style.setProperty(
+                  "transition",
+                  `translate ${CAROUSEL.style.getPropertyValue("--transition-duration")}`
+               );
+               TRACK.style.translate = `${negativeOffsetOrigin}px`;
+            });
+            let timerID = setTimeout(() => {
+               dispatch({ actionType: "stopAnimation" });
+            }, animationDuration);
+            dispatch({ actionType: "animate", data: timerID });
+         }
+      } catch (e) {
+         console.error(e)
+      }
+   
+      console.log(trackStateTitle[trackState])
+      // reset carousel to origin
+      if (trackRef.current !== null && trackState === trackStateTitle["Stopped"]) {
+         const TRACK = trackRef.current;
+         TRACK.style.translate = `${negativeOffsetOrigin}px`;
+         if (playAnimations) {
+            TRACK.style.setProperty("transition", `all 0ms`);
+         }
+      }
+   }, [playAnimations, trackState])
 
    useEffect(() => {
       try {
@@ -279,18 +291,26 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
          console.error(e)
       }
 
-      document.addEventListener("mousemove", removableMoveCB);
-      document.addEventListener("touchmove", removableMoveCB);
-      document.addEventListener("mouseup", removableReleaseCB);
-      document.addEventListener("touchend", removableReleaseCB);
-
+      // @ts-expect-error no overload matches ...
+      document.addEventListener("mousemove", handleMove);
+      // @ts-expect-error
+      document.addEventListener("touchmove", handleMove);
+      // @ts-expect-error
+      document.addEventListener("mouseup", release);
+      // @ts-expect-error
+      document.addEventListener("touchend", release);
+      
       return () => {
-         document.removeEventListener("mousemove", removableMoveCB);
-         document.removeEventListener("touchmove", removableMoveCB);
-         document.removeEventListener("mouseup", removableReleaseCB);
-         document.removeEventListener("touchend", removableReleaseCB);
+         // @ts-expect-error
+         document.removeEventListener("mousemove", handleMove);
+         // @ts-expect-error
+         document.removeEventListener("touchmove", handleMove);
+         // @ts-expect-error
+         document.removeEventListener("mouseup", release);
+         // @ts-expect-error
+         document.removeEventListener("touchend", release);
       };
-   }, [removableMoveCB, removableReleaseCB, trackState]);
+   }, [handleMove, release, trackState]);
 
    return (<>
       {/*
@@ -298,7 +318,7 @@ const useClientSideRendering = (children: React.ReactNode, autoplay: boolean = f
       */}
       <div id="dev-info">
          {playAnimations === true && (
-            <h2>State: {trackStateTitle[trackState]}</h2>
+            <h2>State: {trackStateTitle[trackState] ?? trackState}</h2>
          )}
          <p>Active Slide: {activeSlide} </p>
          <h2>
